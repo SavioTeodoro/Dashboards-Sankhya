@@ -1,0 +1,76 @@
+<gadget>
+  <prompt-parameters>
+    <parameter id="DATA" description="Data Copia" metadata="date" required="true" keep-last="true" keep-date="false" order="0"/>
+    <parameter id="CODEMP" description="Empresa" metadata="multiList:Text" listType="sql" required="true" keep-last="true" keep-date="false" order="1">
+      <expression type="SQL"><![CDATA[SELECT DISTINCT EMP.CODEMPMATRIZ AS VALUE, TO_CHAR(EMP.CODEMP) || ' - ' ||(SELECT RAZAOABREV FROM TSIEMP WHERE CODEMP = EMP.CODEMP) AS LABEL
+FROM TSIEMP EMP
+WHERE CODEMP < 100
+AND EMP.CODEMP IS NOT NULL
+ORDER BY 2]]></expression>
+    </parameter>
+  </prompt-parameters>
+  <level id="lvl_r71eb6" description="Principal">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_r71eb7" useNewGrid="S">
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT
+	GRU.CODGRUPOPROD,
+	GRU.DESCRGRUPOPROD,
+	CTE.CODEMP,
+	PRO.CODPROD,
+	PRO.DESCRPROD,
+	(SELECT OPCAO FROM TDDOPC WHERE NUCAMPO = (SELECT NUCAMPO FROM TDDCAM WHERE NOMETAB = 'TGFPRO'  AND NOMECAMPO = 'USOPROD') AND VALOR = PRO.USOPROD) AS USO_PROD,
+	CTE.CODLOCAL,
+	(SELECT DESCRLOCAL FROM TGFLOC WHERE CODLOCAL = CTE.CODLOCAL) AS LOCAL, 
+  CTE.CONTROLE,
+	PRO.MARCA,
+	SUM(QTDEST) QUANTIDADE,
+	SUM(CUS.CUSSEMICM)CUSTOsemicms,
+ SUM(QTDEST*CUS.CUSSEMICM) CUSTOTOTAL
+FROM
+	TGFCTE  CTE
+	INNER JOIN TGFPRO PRO ON PRO.CODPROD = CTE.CODPROD
+	INNER JOIN TGFGRU GRU ON GRU.CODGRUPOPROD = PRO.CODGRUPOPROD
+	INNER JOIN TGFCUS CUS ON CTE.CODPROD = CUS.CODPROD AND CTE.CODEMP = CUS.CODEMP
+
+WHERE
+	CTE.DTCONTAGEM = :DATA
+	AND CTE.CODEMP IN :CODEMP
+	AND CUS.DTATUAL = (SELECT MAX(DTATUAL) FROM TGFCUS WHERE CODPROD = CTE.CODPROD
+													   AND CODEMP = CTE.CODEMP
+													   AND DTATUAL <= (CTE.DTCONTAGEM)
+													   )
+
+GROUP BY
+	CTE.CODEMP,
+	CTE.CODLOCAL,
+	GRU.CODGRUPOPROD,
+	GRU.DESCRGRUPOPROD,
+	PRO.CODPROD,
+	PRO.DESCRPROD,
+	PRO.USOPROD,
+	PRO.MARCA,
+ CTE.CONTROLE
+
+ORDER BY 1,12 DESC
+
+
+]]></expression>
+        <metadata>
+          <field name="CODGRUPOPROD" label="Cod Grupo Prod" type="I" visible="true" useFooter="false"/>
+          <field name="DESCRGRUPOPROD" label="Grupo Prod" type="S" visible="true" useFooter="false"/>
+          <field name="CODEMP" label="Empresa" type="I" visible="true" useFooter="false" mask="###0"/>
+          <field name="CODPROD" label="Cod Prod" type="I" visible="true" useFooter="false" mask="###0"/>
+          <field name="DESCRPROD" label="Produto" type="S" visible="true" useFooter="false"/>
+          <field name="USO_PROD" label="Uso Prod" type="S" visible="true" useFooter="false"/>
+          <field name="CODLOCAL" label="Cod Local" type="I" visible="true" useFooter="false" mask="###0"/>
+          <field name="LOCAL" label="Local" type="S" visible="true" useFooter="false"/>
+          <field name="CONTROLE" label="Controle" type="S" visible="true" useFooter="false"/>
+          <field name="MARCA" label="Marca" type="S" visible="true" useFooter="false"/>
+          <field name="QUANTIDADE" label="Quantidade" type="I" visible="true" useFooter="false" mask="###0"/>
+          <field name="CUSTOSEMICMS" label="Custo Sem ICMS" type="F" visible="true" useFooter="false" mask="#.##0,00"/>
+          <field name="CUSTOTOTAL" label="Custo Total" type="F" visible="true" useFooter="SUM" mask="#.##0,00"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+</gadget>
