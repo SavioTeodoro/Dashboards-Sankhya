@@ -1,0 +1,166 @@
+<gadget>
+  <prompt-parameters>
+    <parameter id="CODEMP" description="Empresa" metadata="multiList:Text" listType="sql" required="true" keep-last="true" keep-date="false">
+      <expression type="SQL"><![CDATA[SELECT EMP.CODEMP AS VALUE,  CODEMP||'-'||NOMEFANTASIA AS LABEL
+FROM TSIEMP EMP  
+ORDER BY 1]]></expression>
+    </parameter>
+    <parameter id="PERIODO" description="Período" metadata="datePeriod" required="true" keep-last="true" keep-date="false"/>
+  </prompt-parameters>
+  <level id="lvl_4b9c55" description="Principal">
+    <container orientacao="V" tamanhoRelativo="100">
+      <container orientacao="H" tamanhoRelativo="50">
+        <container orientacao="V" tamanhoRelativo="40300">
+          <grid id="grd_4b9c56" useNewGrid="S">
+            <title><![CDATA[MOVIMENTO COMERCIAL TOTAL]]></title>
+            <expression type="sql" data-source="MGEDS"><![CDATA[ SELECT CODEMP
+     , NOMEFANTASIA
+     , ROUND(SUM(CASE WHEN CODTIPOPER <> ALL (462,481,486,414) THEN (CASE WHEN ATUALLIVISS = 'N' AND TIPMOV = 'V' THEN VLRNOTA ELSE 0 END) ELSE 0 END ), 2) VLRPRODUTO
+     , ROUND(SUM(CASE WHEN CODTIPOPER IN (462,481,486,414) THEN  VLRNOTA ELSE 0 END ), 2) AS IMOBILIZADO
+     , ROUND(SUM(CASE WHEN ATUALLIVISS = 'S' AND TIPMOV = 'V' THEN VLRNOTA ELSE 0 END), 2) VLRSERVICO
+     , ROUND(SUM(CASE WHEN TIPMOV = 'D' THEN VLRNOTA ELSE 0 END), 2) VLRDEVOLUCAO
+     , (ROUND(SUM(CASE WHEN ATUALLIVISS = 'N' AND TIPMOV = 'V' THEN VLRNOTA ELSE 0 END), 2) + ROUND(SUM(CASE WHEN ATUALLIVISS = 'S' AND TIPMOV = 'V' THEN VLRNOTA ELSE 0 END), 2)) -
+       ROUND(SUM(CASE WHEN TIPMOV = 'D' THEN VLRNOTA ELSE 0 END), 2) VLRNOTA
+     , ROUND(SUM(CASE WHEN TIPMOV = 'V' THEN CUSTOTOTAL ELSE CUSTOTOTAL * (-1) END), 2) CUSTOTOTAL
+  FROM (
+  SELECT CAB.NUNOTA
+       , CAB.CODEMP
+       , EMP.NOMEFANTASIA
+       , CAB.NUMNOTA
+       , CAB.SERIENOTA
+       , CAB.DTNEG
+       , CAB.DTENTSAI
+       , CAB.CODPARC
+       , PAR.NOMEPARC
+       , CAB.TIPMOV
+       , TPO.ATUALLIVISS
+       , CAB.VLRNOTA
+       , NVL((SELECT SUM(C.CUSSEMICM*I.QTDNEG) 
+                   FROM TGFCUS C, TGFITE I
+                  WHERE I.NUNOTA = CAB.NUNOTA 
+                    AND C.CODEMP = I.CODEMP 
+                    AND C.CODPROD = I.CODPROD
+                    AND C.DTATUAL = (SELECT MAX(DTATUAL) 
+                                       FROM TGFCUS 
+                                      WHERE CODEMP = C.CODEMP
+                                        AND CODPROD = C.CODPROD AND DTATUAL <= CAB.DTNEG)),0) AS CUSTOTOTAL
+       , CAB.CODTIPOPER
+       , TPO.DESCROPER
+    FROM TGFCAB CAB INNER JOIN TGFTOP TPO   ON CAB.CODTIPOPER = TPO.CODTIPOPER AND CAB.DHTIPOPER = TPO.DHALTER
+                    INNER JOIN TGFPAR PAR   ON CAB.CODPARC = PAR.CODPARC
+                    INNER JOIN TSIEMP EMP   ON CAB.CODEMP = EMP.CODEMP
+   WHERE  CAB.STATUSNOTA = 'L'
+     AND TPO.CODTIPOPER = CAB.CODTIPOPER
+     AND TPO.DHALTER = CAB.DHTIPOPER
+     AND TPO.ATUALFIN <> 0 
+       AND TPO.DESCROPER NOT LIKE '%GARANT%'
+     AND CAB.TIPMOV IN ('V','D')
+     AND CAB.DTENTSAI BETWEEN :PERIODO.INI AND :PERIODO.FIN
+    and cab.codemp in :CODEMP
+     AND CAB.CODPARC = PAR.CODPARC
+     AND CAB.CODEMP = EMP.CODEMP
+    
+ 
+) Z
+GROUP BY CODEMP
+       , NOMEFANTASIA]]></expression>
+            <metadata>
+              <field name="CODEMP" label="Cód. Empresa" type="I" visible="true" useFooter="false"/>
+              <field name="NOMEFANTASIA" label="Empresa" type="S" visible="true" useFooter="false"/>
+              <field name="VLRPRODUTO" label="Vlr. Produto" type="F" visible="true" useFooter="true" mask="#.##0,00;-n"/>
+              <field name="IMOBILIZADO" label="Imobilizado" type="F" visible="true" useFooter="SUM" mask="#.##0,00;-n"/>
+              <field name="VLRSERVICO" label="Vlr. Serviço" type="F" visible="true" useFooter="true" mask="#.##0,00;-n"/>
+              <field name="VLRDEVOLUCAO" label="Vlr. Devolução" type="F" visible="true" useFooter="true" mask="#.##0,00;-n"/>
+              <field name="VLRNOTA" label="Receita Total" type="F" visible="true" useFooter="true" mask="#.##0,00;-n"/>
+              <field name="CUSTOTOTAL" label="Custo Total" type="F" visible="true" useFooter="true" mask="#.##0,00;-n"/>
+            </metadata>
+            <on-click navigate-to="lvl_4b9c84">
+              <param id="EMP">$CODEMP</param>
+            </on-click>
+          </grid>
+        </container>
+      </container>
+    </container>
+  </level>
+  <level id="lvl_4b9c84" description="Analitico">
+    <args>
+      <arg id="EMP" type="integer"/>
+    </args>
+    <container orientacao="V" tamanhoRelativo="100">
+      <container orientacao="H" tamanhoRelativo="50">
+        <container orientacao="V" tamanhoRelativo="305">
+          <grid id="grd_4b9c86" useNewGrid="S">
+            <args>
+              <arg id="EMP" type="integer"/>
+            </args>
+            <title><![CDATA[MOVIMENTO COMERCIAL ANALÍTICO]]></title>
+            <expression type="sql" data-source="MGEDS"><![CDATA[  SELECT CAB.CODEMP
+       , EMP.NOMEFANTASIA
+       , CAB.NUNOTA
+       , CAB.NUMNOTA
+       , CAB.SERIENOTA
+       , CAB.DTNEG
+       , CAB.DTENTSAI
+       , CAB.CODPARC
+       , PAR.RAZAOSOCIAL
+       , CASE WHEN CAB.CODTIPOPER <> ALL (462,481,486,414) THEN (CASE WHEN ATUALLIVISS = 'N' AND CAB.TIPMOV = 'V' THEN VLRNOTA ELSE 0 END)ELSE 0 END VLRPRODUTO
+       , CASE WHEN CAB.CODTIPOPER IN (462,481,486,414) THEN VLRNOTA ELSE 0 END AS IMOBILIZADO
+       , CASE WHEN ATUALLIVISS = 'S' AND CAB.TIPMOV = 'V' THEN VLRNOTA ELSE 0 END VLRSERVICO
+       , CASE WHEN CAB.TIPMOV = 'D' THEN VLRNOTA ELSE 0 END VLRDEVOLUCAO
+       , (CASE WHEN ATUALLIVISS = 'N' AND CAB.TIPMOV = 'V' THEN VLRNOTA ELSE 0 END + CASE WHEN ATUALLIVISS = 'S' AND CAB.TIPMOV = 'V' THEN VLRNOTA ELSE 0 END) - CASE WHEN CAB.TIPMOV = 'D' THEN VLRNOTA ELSE 0 END VLRNOTA
+       , NVL((SELECT SUM(C.CUSSEMICM*I.QTDNEG) 
+                     FROM TGFCUS C, TGFITE I
+                    WHERE I.NUNOTA = CAB.NUNOTA 
+                      AND C.CODEMP = I.CODEMP 
+                      AND C.CODPROD = I.CODPROD
+                      AND C.DTATUAL = (SELECT MAX(DTATUAL) 
+                                         FROM TGFCUS 
+                                        WHERE CODEMP = C.CODEMP
+                                          AND CODPROD = C.CODPROD AND DTATUAL <= CAB.DTNEG)),0) * CASE WHEN CAB.TIPMOV = 'D' THEN (-1) ELSE 1 END CUSTOTOTAL
+       , CAB.CODTIPOPER
+       , TPO.DESCROPER
+       , CAB.CODNAT
+       , NAT.DESCRNAT
+    FROM TGFCAB CAB INNER JOIN TGFTOP TPO   ON CAB.CODTIPOPER = TPO.CODTIPOPER AND CAB.DHTIPOPER = TPO.DHALTER
+                    INNER JOIN TGFPAR PAR   ON CAB.CODPARC = PAR.CODPARC
+                    INNER JOIN TSIEMP EMP   ON CAB.CODEMP = EMP.CODEMP
+                    INNER JOIN TGFNAT NAT   ON CAB.CODNAT = NAT.CODNAT
+   WHERE CAB.STATUSNOTA = 'L'
+     AND TPO.CODTIPOPER = CAB.CODTIPOPER
+     AND TPO.DHALTER = CAB.DHTIPOPER
+     AND TPO.ATUALFIN <> 0 
+       AND TPO.DESCROPER NOT LIKE '%GARANT%'
+     AND CAB.TIPMOV IN ('V','D')
+     AND CAB.DTENTSAI BETWEEN :PERIODO.INI AND :PERIODO.FIN
+     AND CAB.CODEMP = :EMP
+     AND CAB.CODPARC = PAR.CODPARC
+     AND CAB.CODEMP = EMP.CODEMP
+   
+ORDER BY CAB.CODEMP,4,2,5]]></expression>
+            <metadata>
+              <field name="CODEMP" label="Cód. Empresa" type="I" visible="true" useFooter="false"/>
+              <field name="NOMEFANTASIA" label="Empresa" type="S" visible="true" useFooter="false"/>
+              <field name="NUNOTA" label="Nro. Único" type="I" visible="true" useFooter="false"/>
+              <field name="NUMNOTA" label="Nro. Nota" type="I" visible="true" useFooter="false"/>
+              <field name="SERIENOTA" label="Série" type="S" visible="true" useFooter="false"/>
+              <field name="DTNEG" label="Dt. Negoc." type="D" visible="true" useFooter="false"/>
+              <field name="DTENTSAI" label="Dt. Ent/Saída" type="D" visible="true" useFooter="false"/>
+              <field name="CODPARC" label="Cód. Parceiro" type="I" visible="true" useFooter="false"/>
+              <field name="RAZAOSOCIAL" label="Razão Social" type="S" visible="true" useFooter="false"/>
+              <field name="VLRPRODUTO" label="Vlr. Produto" type="F" visible="true" useFooter="true" mask="#.##0,00;-n"/>
+              <field name="IMOBILIZADO" label="Imobilizado" type="F" visible="true" useFooter="SUM" mask="#.##0,00;-n"/>
+              <field name="VLRSERVICO" label="Vlr. Serviço" type="F" visible="true" useFooter="true" mask="#.##0,00;-n"/>
+              <field name="VLRDEVOLUCAO" label="Vlr. Devolução" type="F" visible="true" useFooter="true" mask="#.##0,00;-n"/>
+              <field name="VLRNOTA" label="Vlr. Nota" type="F" visible="true" useFooter="true" mask="#.##0,00;-n"/>
+              <field name="CUSTOTOTAL" label="Custo Total" type="F" visible="true" useFooter="true" mask="#.##0,00;-n"/>
+              <field name="CODTIPOPER" label="TOP" type="I" visible="true" useFooter="false"/>
+              <field name="DESCROPER" label="Descr. da TOP" type="S" visible="true" useFooter="false"/>
+              <field name="CODNAT" label="Cód. Natureza" type="I" visible="true" useFooter="false"/>
+              <field name="DESCRNAT" label="Descr. Natureza" type="S" visible="true" useFooter="false"/>
+            </metadata>
+          </grid>
+        </container>
+      </container>
+    </container>
+  </level>
+</gadget>
