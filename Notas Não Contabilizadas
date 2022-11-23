@@ -1,0 +1,66 @@
+<gadget>
+  <prompt-parameters>
+    <parameter id="CODEMP" description="Empresa" metadata="multiList:Text" listType="sql" required="false" keep-last="false" keep-date="false">
+      <expression type="SQL"><![CDATA[SELECT EMP.CODEMP AS VALUE,  CODEMP||'-'||NOMEFANTASIA AS LABEL
+FROM TSIEMP EMP  
+ORDER BY 1]]></expression>
+    </parameter>
+    <parameter id="PERIODO" description="Período" metadata="datePeriod" required="true" keep-last="false" keep-date="false"/>
+  </prompt-parameters>
+  <level id="lvl_agr56o1" description="Principal">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_agr56o2">
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT
+       C.TIPMOV,
+       C.NUNOTA,
+       C.NUMNOTA,
+       C.CODEMP,
+       E.RAZAOSOCIAL,
+       (CASE
+         WHEN C.TIPMOV IN ('C','D','E','V') THEN
+          C.DTENTSAI
+         ELSE
+          C.DTNEG
+       END) DTMOV,
+       C.VLRNOTA,
+       C.CODTIPOPER,
+       T.DESCROPER,
+       C.STATUSNFE
+ FROM TGFCAB C
+  LEFT JOIN TCBINT I
+    ON I.NUNICO = C.NUNOTA
+   AND I.ORIGEM = 'E'
+  LEFT JOIN TSIEMP E
+    ON E.CODEMP=C.CODEMP, TGFTOP T
+ WHERE T.CODTIPOPER = C.CODTIPOPER
+   AND T.DHALTER = C.DHTIPOPER
+   AND T.TIPMOV  IN  ('C','D','E','V')
+   AND ((CASE WHEN C.TIPMOV IN ('V') THEN DTNEG END) BETWEEN :PERIODO.INI AND :PERIODO.FIN
+   OR (CASE WHEN C.TIPMOV IN ('C','D','E') THEN DTENTSAI END) BETWEEN :PERIODO.INI AND :PERIODO.FIN)
+   AND T.ATUALCTB = 'S'
+   AND C.STATUSNOTA = 'L'
+   AND C.CODEMP  IN :CODEMP  
+   AND I.NUNICO IS NULL
+ ORDER BY C.TIPMOV,C.CODTIPOPER,
+          C.CODEMP,
+          C.DTMOV,
+          C.NUMNOTA]]></expression>
+        <metadata>
+          <field name="TIPMOV" label="Tipo Mov" type="S" visible="true" useFooter="false"/>
+          <field name="NUNOTA" label="Nro Unico" type="I" visible="true" useFooter="false"/>
+          <field name="NUMNOTA" label="Nro Nota" type="I" visible="true" useFooter="false"/>
+          <field name="CODEMP" label="Cod.Emp" type="I" visible="true" useFooter="false"/>
+          <field name="RAZAOSOCIAL" label="Razão Social" type="S" visible="true" useFooter="false"/>
+          <field name="DTMOV" label="Dt. Mov" type="D" visible="true" useFooter="false"/>
+          <field name="VLRNOTA" label="Vlr. Nota" type="F" visible="true" useFooter="SUM" mask="#.##0,00;-n"/>
+          <field name="CODTIPOPER" label="Cod.TOP" type="I" visible="true" useFooter="false"/>
+          <field name="DESCROPER" label="Descrição" type="S" visible="true" useFooter="false"/>
+          <field name="STATUSNFE" label="Status NFE" type="S" visible="true" useFooter="false"/>
+        </metadata>
+        <on-click-launcher resource-id="br.com.sankhya.com.mov.CentralNotas">
+          <NUNOTA>$NUNOTA</NUNOTA>
+        </on-click-launcher>
+      </grid>
+    </container>
+  </level>
+</gadget>
