@@ -1,0 +1,283 @@
+<gadget>
+  <prompt-parameters>
+    <parameter id="EMPRESA" description="Empresa" metadata="multiList:Text" listType="sql" required="true" keep-last="true" keep-date="false" order="0">
+      <expression type="SQL"><![CDATA[SELECT EMP.CODEMP AS VALUE, TO_CHAR(CODEMP) ||' - '|| RAZAOABREV AS LABEL
+FROM TSIEMP EMP
+WHERE CODEMP < 900
+/*AND CODEMP IN (SELECT CODEMP FROM TCBEMP)*/
+ORDER BY CODEMP]]></expression>
+    </parameter>
+    <parameter id="DTMOV" description="Data Movimento" metadata="datePeriod" required="true" keep-last="true" keep-date="false" order="1"/>
+    <parameter id="CONTA" description="Conta Contábil" metadata="entity:PlanoContaEmpresa@CODCTACTB" required="true" keep-last="true" keep-date="false" order="2"/>
+    <parameter id="LOTE" description="Nro Lote" metadata="integer" required="false" keep-last="false" keep-date="false" order="3"/>
+  </prompt-parameters>
+  <level id="lvl_av48r9g" description="Principal">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_av48r9h" useNewGrid="S">
+        <expression type="sql" data-source="MGEDS"><![CDATA[
+SELECT
+	CP.ORIGEM As Origem,
+	CASE 
+		WHEN CP.ORIGEM = 'B' THEN (SELECT CODCTABCOINT FROM TGFMBC WHERE NUBCO = (SELECT NUBCO FROM TGFFIN WHERE NUFIN = CP.NUNICO))
+		WHEN CP.ORIGEM = 'M' THEN (SELECT CODCTABCOINT FROM TGFMBC WHERE NUBCO = CP.NUNICO ) END AS CODCTABCOINT,
+	CP.NUNICO As Nunico,
+	CP.DATAREG As DtMov,
+	CP.CODCTACTB As CodCtaCtb,
+	CP.CTACTB As ContaContab,
+	CP.DESCRCTA As NomeConta,
+	CP.NUMLOTE As NumLote,
+	CP.CODTIPOPER As CodTop,
+	CP.CODTIPOPERBAIXA As CodTopBaixa,
+    SUBSTR(CASE WHEN NVL(PAR.CGC_CPF,0) = 0 THEN TO_CHAR(CP.CODPARC) ELSE PAR.CGC_CPF END,1,8) AS CNPJRAIZ,
+	CP.CODPARC As CodParc,
+	CP.RAZAOSOCIAL As RazaoParceiro,
+	CP.VlrDebito As VlrDebito,
+	CP.VlrCredito As VlrCredito ,
+   (CP.VlrCredito - CP.VlrDebito) as Saldo,
+	CP.CODEMPORIG as CodEmpOrigem,
+	CP.CODCONPAR as CodConPar,
+	CP.NUMNOTA as Numnota,
+    CP.COMPLHIST
+FROM
+	AD_VW_RAZAO_ANALITICO CP LEFT JOIN TGFPAR PAR ON PAR.CODPARC = CP.CODPARC
+
+WHERE CP.DTMOV >= :DTMOV.INI AND
+	CP.DTMOV <= :DTMOV.FIN AND
+	CP.CODCTACTB = :CONTA AND
+	CP.CODEMPORIG IN :EMPRESA
+
+ORDER BY CP.CODCTACTB, CP.RAZAOSOCIAL, CP.DATAREG, CP.VlrCredito, CP.VlrDebito
+
+]]></expression>
+        <metadata>
+          <field name="ORIGEM" label="ORIGEM" type="S" visible="true" useFooter="false"/>
+          <field name="CODCTABCOINT" label="CODCTABCOINT" type="I" visible="true" useFooter="false"/>
+          <field name="NUNICO" label="NUNICO" type="I" visible="true" useFooter="false"/>
+          <field name="DTMOV" label="DTMOV" type="D" visible="true" useFooter="false"/>
+          <field name="CODCTACTB" label="CODCTACTB" type="I" visible="true" useFooter="false"/>
+          <field name="CONTACONTAB" label="CONTACONTAB" type="S" visible="true" useFooter="false"/>
+          <field name="NOMECONTA" label="NOMECONTA" type="S" visible="true" useFooter="false"/>
+          <field name="NUMLOTE" label="NUMLOTE" type="I" visible="true" useFooter="false"/>
+          <field name="CODTOP" label="CODTOP" type="I" visible="true" useFooter="false"/>
+          <field name="CODTOPBAIXA" label="CODTOPBAIXA" type="I" visible="true" useFooter="false"/>
+          <field name="CNPJRAIZ" label="CNPJRAIZ" type="S" visible="true" useFooter="false"/>
+          <field name="CODPARC" label="CODPARC" type="I" visible="true" useFooter="false"/>
+          <field name="RAZAOPARCEIRO" label="RAZAOPARCEIRO" type="S" visible="true" useFooter="false"/>
+          <field name="VLRDEBITO" label="VLRDEBITO" type="F" visible="true" useFooter="SUM" mask="#.##0,00;-n"/>
+          <field name="VLRCREDITO" label="VLRCREDITO" type="F" visible="true" useFooter="SUM" mask="#.##0,00;-n"/>
+          <field name="SALDO" label="SALDO" type="F" visible="true" useFooter="SUM" mask="#.##0,00;-n"/>
+          <field name="CODEMPORIGEM" label="CODEMPORIGEM" type="I" visible="true" useFooter="false"/>
+          <field name="CODCONPAR" label="CODCONPAR" type="I" visible="true" useFooter="false"/>
+          <field name="NUMNOTA" label="NUMNOTA" type="I" visible="true" useFooter="false"/>
+          <field name="COMPLHIST" label="COMPLHIST" type="S" visible="true" useFooter="false"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+  <level id="lvl_aipcntn" description="backup">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_aipcntp" useNewGrid="S">
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT 
+        Lancamento.NUMLOTE, 
+        Lancamento.NUMLANC, 
+        Lancamento.NUMDOC, 
+        CASE WHEN Lancamento.TIPLANC = 'R' THEN 'C' ELSE Lancamento.TIPLANC END AS TIPLANC, 
+        Lancamento.DTMOV, 
+        Lancamento.CODCONPAR, 
+        Lancamento.CODCTACTB, 
+        PlanoContaEmpresa.CTACTB,
+        PlanoContaEmpresa.DESCRCTA,
+        Lancamento.COMPLHIST, 
+        Lancamento.CODCENCUS,
+        CentroResultado.DESCRCENCUS,
+        Lancamento.CODPROJ, 
+        Projeto.IDENTIFICACAO,
+        Lancamento.REFERENCIA, 
+        PlanoContaEmpresa.CODGRUPOCTA,
+        Lancamento.CODEMP,
+        Lancamento.CODEMPORIG,
+		(SELECT OPCAO FROM TDDOPC WHERE NUCAMPO=45992 AND VALOR= PlanoContaEmpresa.CODGRUPOCTA) AS CODIGRUPOCTA,
+        Lancamento.VLRLANC,
+		  CASE WHEN Lancamento.TIPLANC = 'R' THEN (Lancamento.VLRLANC * -1) ELSE Lancamento.VLRLANC END AS VALORLIQ
+FROM 
+        TCBLAN Lancamento LEFT JOIN TCSPRJ Projeto ON  Lancamento.CODPROJ= Projeto.CODPROJ
+        INNER JOIN TSIEMP Empresa ON Lancamento.CODEMP= Empresa.CODEMP
+        LEFT JOIN TSICUS CentroResultado ON  Lancamento.CODCENCUS = CentroResultado.CODCENCUS
+        LEFT JOIN TCBPLA PlanoContaEmpresa ON  Lancamento.CODCTACTB = PlanoContaEmpresa.CODCTACTB
+WHERE
+		Lancamento.CODEMP IN :EMPRESA
+		AND Lancamento.DTMOV BETWEEN :DTMOV.INI AND :DTMOV.FIN
+		AND ( Lancamento.CODCTACTB = :CONTA OR :CONTA IS NULL)
+		AND ( Lancamento.NUMLOTE = :LOTE OR :LOTE IS NULL)
+]]></expression>
+        <metadata>
+          <field name="NUMLOTE" label="Nro lote" type="I" visible="true" useFooter="false"/>
+          <field name="NUMLANC" label="Nro Lançamento" type="I" visible="true" useFooter="false"/>
+          <field name="NUMDOC" label="Nro Documento" type="I" visible="true" useFooter="false"/>
+          <field name="TIPLANC" label="D/C" type="S" visible="true" useFooter="false"/>
+          <field name="DTMOV" label="Dt. Movimento" type="D" visible="false" useFooter="false"/>
+          <field name="CODCONPAR" label="Cod. Contra Partida" type="I" visible="true" useFooter="false"/>
+          <field name="CODCTACTB" label="Conta Reduzida" type="I" visible="true" useFooter="false"/>
+          <field name="CTACTB" label="Conta Contabil" type="S" visible="true" useFooter="false"/>
+          <field name="DESCRCTA" label="Nome Conta" type="S" visible="true" useFooter="false"/>
+          <field name="COMPLHIST" label="Historico" type="S" visible="true" useFooter="false"/>
+          <field name="CODCENCUS" label="Cod. Centro resultado" type="I" visible="true" useFooter="false"/>
+          <field name="DESCRCENCUS" label="Centro Resultado" type="S" visible="true" useFooter="false"/>
+          <field name="CODPROJ" label="Cod. Projeto" type="I" visible="true" useFooter="false"/>
+          <field name="IDENTIFICACAO" label="Projeto" type="S" visible="true" useFooter="false"/>
+          <field name="REFERENCIA" label="Referencia" type="D" visible="true" useFooter="false"/>
+          <field name="CODGRUPOCTA" label="Cod. Grupo Conta" type="S" visible="false" useFooter="false"/>
+          <field name="CODEMP" label="Cod. Empresa" type="I" visible="true" useFooter="false"/>
+          <field name="CODEMPORIG" label="Cod. Empresa Origem" type="I" visible="true" useFooter="false"/>
+          <field name="CODIGRUPOCTA" label="Grupo Conta" type="S" visible="true" useFooter="false"/>
+          <field name="VLRLANC" label="Vlr Lançamento" type="F" visible="true" useFooter="SUM" mask="#.##0,00"/>
+          <field name="VALORLIQ" label="Vlr Lanc. Liq." type="F" visible="true" useFooter="SUM" mask="#.##0,00"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+  <level id="lvl_ae3sniv" description="BACKUP">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_ae3snix" useNewGrid="S">
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT SLD.*,SUM(SLD.Saldo) OVER (PARTITION BY SLD.CodCtaCtb ORDER BY SALDOINICIAL,CodCtaCtb, RazaoParceiro, DtMov, VlrCredito, VlrDebito) AS SALDO FROM (
+SELECT 'SLDANT' As Origem,
+       0 As Nunico,TO_DATE(:DTMOV.INI)-1 As DtMov,
+       TO_NUMBER(:CONTA) As CodCtaCtb,
+       '-999.0.00.00.000.00' AS ContaContab,
+       'SALDO ANTERIOR' As NomeConta,
+       -99999 AS NumLote,
+       99999 AS CodTop,
+       99999 AS CodTopBaixa,
+       '0' AS CNPJRAIZ,
+       00000 As CodParc,
+       'SALDO ANTERIOR' as RazaoParceiro,
+       0 As VlrDebito,
+       0 As VlrCredito,
+       AD_FNC_SALDO_CTACTB(CEMP.CODEMP,:CONTA,TO_DATE(:DTMOV.INI)-1) AS Saldo,
+       TO_NUMBER(CEMP.CODEMP) as CodEmpOrigem,
+       0 as CodConPar,
+       0 as Numnota,
+       0 AS SALDOINICIAL,
+       AD_FNC_SALDO_CTACTB(CEMP.CODEMP,:CONTA,TO_DATE(:DTMOV.INI)-1) as SALDOANTERIOR,
+       '' AS COMPLHIST
+       FROM TSIEMP CEMP
+	    WHERE CEMP.CODEMP IN :EMPRESA
+UNION ALL
+SELECT
+	CP.ORIGEM As Origem,
+	CP.NUNICO As Nunico,
+	CP.DATAREG As DtMov,
+	CP.CODCTACTB As CodCtaCtb,
+	CP.CTACTB As ContaContab,
+	CP.DESCRCTA As NomeConta,
+	CP.NUMLOTE As NumLote,
+	CP.CODTIPOPER As CodTop,
+	CP.CODTIPOPERBAIXA As CodTopBaixa,
+ SUBSTR(CASE WHEN NVL(PAR.CGC_CPF,0) = 0 THEN TO_CHAR(CP.CODPARC) ELSE PAR.CGC_CPF END,1,8) AS CNPJRAIZ,
+	CP.CODPARC As CodParc,
+	CP.RAZAOSOCIAL As RazaoParceiro,
+	CP.VlrDebito As VlrDebito,
+	CP.VlrCredito As VlrCredito ,
+   (CP.VlrCredito - CP.VlrDebito) as Saldo,
+	CP.CODEMPORIG as CodEmpOrigem,
+	CP.CODCONPAR as CodConPar,
+	CP.NUMNOTA as Numnota,
+    1 AS SALDOINICIAL,
+    0 AS SALDOANTERIOR,
+    CP.COMPLHIST
+FROM
+	AD_VW_RAZAO_ANALITICO CP
+LEFT JOIN TGFPAR PAR ON PAR.CODPARC = CP.CODPARC
+
+WHERE CP.DTMOV >= :DTMOV.INI AND
+	CP.DTMOV <= :DTMOV.FIN AND
+	CP.CODCTACTB = :CONTA AND
+	CP.CODEMPORIG IN :EMPRESA) SLD
+
+ORDER BY SALDOINICIAL,CodCtaCtb, RazaoParceiro, DtMov, VlrCredito, VlrDebito
+
+/*
+SELECT SLD.*,SUM(SLD.Saldo) OVER (PARTITION BY SLD.CodCtaCtb ORDER BY SALDOINICIAL,CodCtaCtb, RazaoParceiro, DtMov, VlrCredito, VlrDebito) AS SALDO FROM (
+SELECT 'SLDANT' As Origem,
+       0 As Nunico,TO_DATE(:DTMOV.INI)-1 As DtMov,
+       TO_NUMBER(:CONTA) As CodCtaCtb,
+       '-999.0.00.00.000.00' AS ContaContab,
+       'SALDO ANTERIOR' As NomeConta,
+       -99999 AS NumLote,
+       99999 AS CodTop,
+       99999 AS CodTopBaixa,
+       00000 As CodParc,
+       'SALDO ANTERIOR' as RazaoParceiro,
+       0 As VlrDebito,
+       0 As VlrCredito,
+       AD_FNC_SALDO_CTACTB(CEMP.CODEMP,:CONTA,TO_DATE(:DTMOV.INI)-1) AS Saldo,
+       TO_NUMBER(CEMP.CODEMP) as CodEmpOrigem,
+       0 as CodConPar,
+       0 as Numnota,
+       0 AS SALDOINICIAL,
+       AD_FNC_SALDO_CTACTB(CEMP.CODEMP,:CONTA,TO_DATE(:DTMOV.INI)-1) as SALDOANTERIOR,
+       '' AS COMPLHIST
+       FROM TSIEMP CEMP WHERE CEMP.CODEMP IN :EMPRESA
+UNION ALL
+SELECT
+	CP.ORIGEM As Origem,
+	CP.NUNICO As Nunico,
+	CP.DATAREG As DtMov,
+	CP.CODCTACTB As CodCtaCtb,
+	CP.CTACTB As ContaContab,
+	CP.DESCRCTA As NomeConta,
+	CP.NUMLOTE As NumLote,
+	CP.CODTIPOPER As CodTop,
+	CP.CODTIPOPERBAIXA As CodTopBaixa,
+	CP.CODPARC As CodParc,
+	CP.RAZAOSOCIAL As RazaoParceiro,
+	CP.VlrDebito As VlrDebito,
+	CP.VlrCredito As VlrCredito ,
+   (CP.VlrCredito - CP.VlrDebito) as Saldo,
+	CP.CODEMPORIG as CodEmpOrigem,
+	CP.CODCONPAR as CodConPar,
+	CP.NUMNOTA as Numnota,
+    1 AS SALDOINICIAL,
+    0 AS SALDOANTERIOR,
+    CP.COMPLHIST
+FROM
+	AD_VW_RAZAO_ANALITICO CP
+
+WHERE CP.DTMOV >= :DTMOV.INI AND
+	CP.DTMOV <= :DTMOV.FIN AND
+	CP.CODCTACTB = :CONTA AND
+	CP.CODEMPORIG IN :EMPRESA) SLD
+
+ORDER BY SALDOINICIAL,CodCtaCtb, RazaoParceiro, DtMov, VlrCredito, VlrDebito*/]]></expression>
+        <metadata>
+          <field name="ORIGEM" label="ORIGEM" type="S" visible="true" useFooter="false"/>
+          <field name="NUNICO" label="NUNICO" type="I" visible="true" useFooter="false"/>
+          <field name="DTMOV" label="DTMOV" type="D" visible="true" useFooter="false"/>
+          <field name="CODCTACTB" label="CODCTACTB" type="I" visible="true" useFooter="false"/>
+          <field name="CONTACONTAB" label="CONTACONTAB" type="S" visible="true" useFooter="false"/>
+          <field name="NOMECONTA" label="NOMECONTA" type="S" visible="true" useFooter="false"/>
+          <field name="NUMLOTE" label="NUMLOTE" type="I" visible="true" useFooter="false"/>
+          <field name="CODTOP" label="CODTOP" type="I" visible="true" useFooter="false"/>
+          <field name="CODTOPBAIXA" label="CODTOPBAIXA" type="I" visible="true" useFooter="false"/>
+          <field name="CNPJRAIZ" label="CNPJRAIZ" type="S" visible="true" useFooter="false"/>
+          <field name="CODPARC" label="CODPARC" type="I" visible="true" useFooter="false"/>
+          <field name="RAZAOPARCEIRO" label="RAZAOPARCEIRO" type="S" visible="true" useFooter="false"/>
+          <field name="VLRDEBITO" label="VLRDEBITO" type="F" visible="true" useFooter="SUM" mask="#.##0,00;-n"/>
+          <field name="VLRCREDITO" label="VLRCREDITO" type="F" visible="true" useFooter="SUM" mask="#.##0,00;-n"/>
+          <field name="SALDO" label="SALDO" type="F" visible="true" useFooter="PER" mask="#.##0,00;-n">
+            <aggregates per="PER">
+              <text><![CDATA[SLD]]></text>
+              <personalized><![CDATA[SUM($SALDOANTERIOR)+SUM($VLRCREDITO)-SUM($VLRDEBITO)]]></personalized>
+            </aggregates>
+          </field>
+          <field name="CODEMPORIGEM" label="CODEMPORIGEM" type="I" visible="true" useFooter="false"/>
+          <field name="CODCONPAR" label="CODCONPAR" type="I" visible="true" useFooter="false"/>
+          <field name="NUMNOTA" label="NUMNOTA" type="I" visible="true" useFooter="false"/>
+          <field name="SALDOINICIAL" label="SALDOINICIAL" type="I" visible="false" useFooter="false"/>
+          <field name="SALDOANTERIOR" label="SALDOANTERIOR" type="F" visible="true" useFooter="false"/>
+          <field name="COMPLHIST" label="COMPLHIST" type="S" visible="true" useFooter="false"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+</gadget>
