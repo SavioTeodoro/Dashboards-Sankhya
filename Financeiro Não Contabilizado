@@ -1,0 +1,57 @@
+<gadget>
+  <prompt-parameters>
+    <parameter id="CODEMP" description="Empresa" metadata="multiList:Text" listType="sql" required="true" keep-last="false" keep-date="false">
+      <expression type="SQL"><![CDATA[SELECT EMP.CODEMP AS VALUE,  CODEMP||'-'||NOMEFANTASIA AS LABEL
+FROM TSIEMP EMP  
+ORDER BY 1]]></expression>
+    </parameter>
+    <parameter id="PERIODO" description="Período" metadata="datePeriod" required="true" keep-last="false" keep-date="false"/>
+  </prompt-parameters>
+  <level id="lvl_agr56o1" description="Principal">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_agr56o2">
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT  fin.nufin,
+         case when FIN.RECDESP = 1 then 'RECEITA' else 'DESPESA' end AS "Receita_Despesa",
+         E.RAZAOSOCIAL AS "Empresa",
+         FIN.CODCTABCOINT AS "Conta",
+         C.CODCTABCO AS "Conta_Bancaria",
+         C.DESCRICAO AS "Descricao",
+         FIN.NUMNOTA  AS "Numero_Nota",
+         FIN.CODTIPOPER AS "Cod_Top",
+         T.DESCROPER AS "Descricao_Top",
+         FIN.DTNEG,
+         FIN.VLRBAIXA AS "Valor_BAIXA"
+         FROM TGFFIN FIN  LEFT JOIN
+          TCBINT I ON I.NUNICO = FIN.NUFIN  AND I.ORIGEM = 'F'
+         LEFT JOIN TGFTOP T
+            ON FIN.CODTIPOPER = T.CODTIPOPER AND FIN.DHTIPOPER = T.DHALTER
+         LEFT JOIN TSICTA C ON FIN.CODCTABCOINT = C.CODCTABCOINT
+         LEFT JOIN TSIEMP E
+            ON E.CODEMP=I.CODEMP
+   WHERE FIN.DHBAIXA BETWEEN :PERIODO.INI AND :PERIODO.FIN
+         AND C.ATIVA = 'S'
+         AND I.NUNICO IS NULL
+         AND T.TIPMOV='I'
+         AND T.ATUALCTB = 'S'
+         AND C.CODEMP IN :CODEMP  
+ORDER BY NUBCO]]></expression>
+        <metadata>
+          <field name="NUFIN" label="Nro Unico Fin" type="I" visible="true" useFooter="false"/>
+          <field name="Receita_Despesa" label="Rec/Desp" type="S" visible="true" useFooter="false"/>
+          <field name="Empresa" label="Empresa" type="S" visible="true" useFooter="false"/>
+          <field name="Conta" label="Conta" type="I" visible="true" useFooter="false"/>
+          <field name="Conta_Bancaria" label="Conta_Bancaria" type="S" visible="true" useFooter="false"/>
+          <field name="Descricao" label="Descricao" type="S" visible="true" useFooter="false"/>
+          <field name="Numero_Nota" label="Numero_Nota" type="I" visible="true" useFooter="false"/>
+          <field name="Cod_Top" label="Cod_Top" type="I" visible="true" useFooter="false"/>
+          <field name="Descricao_Top" label="Descricao_Top" type="S" visible="true" useFooter="false"/>
+          <field name="DTNEG" label="Dt. Negoc." type="D" visible="true" useFooter="false"/>
+          <field name="Valor_BAIXA" label="Valor_BAIXA" type="F" visible="true" useFooter="false"/>
+        </metadata>
+        <on-click-launcher resource-id="br.com.sankhya.fin.cad.movimentacaoFinanceira">
+          <NUFIN>$NUFIN</NUFIN>
+        </on-click-launcher>
+      </grid>
+    </container>
+  </level>
+</gadget>
