@@ -1,0 +1,1321 @@
+<gadget>
+  <prompt-parameters>
+    <parameter id="POSICAO" description="Data Posição" metadata="date" required="false" keep-last="true" keep-date="false"/>
+    <parameter id="CODEMP" description="Empresa Matriz" metadata="multiList:Text" listType="sql" required="true" keep-last="true" keep-date="false">
+      <expression type="SQL"><![CDATA[SELECT EMP.CODEMP AS VALUE, TO_CHAR(CODEMP) ||' - '|| RAZAOABREV AS LABEL
+FROM TSIEMP EMP
+WHERE CODEMP < 900
+ORDER BY CODEMP]]></expression>
+    </parameter>
+    <parameter id="PARCEIRO" description="Parceiro" metadata="integer" required="false" keep-last="true" keep-date="false" order="0"/>
+    <parameter id="PERIODO" description="Periodo" metadata="datePeriod" required="false" keep-last="true" keep-date="false" order="1"/>
+    <parameter id="MOVIMENTO" description="Filtrar Movimento?" metadata="boolean" required="false" keep-last="true" keep-date="false" default="false" order="2"/>
+  </prompt-parameters>
+  <local-vars>
+    <var id="V_LOGO">
+      <expression type="sql" data-source="MGEDS"><![CDATA[SELECT '<div class="reset"><img src="https://www.bassopancotte.com.br/wp-content/themes/astrusweb/images/logo_nova.png" width="15%"></div>'FROM DUAL]]></expression>
+    </var>
+    <var id="V_LOGO2">
+      <expression type="sql" data-source="MGEDS"><![CDATA[SELECT'<div class="reset"><img src="http://sqabrasil.com/wp-content/uploads/2022/04/logo-sqa.svg" width="40%"></div>'FROM DUAL
+]]></expression>
+    </var>
+    <var id="V_LOGO3">
+      <expression type="sql" data-source="MGEDS"><![CDATA[SELECT'<div class="reset"><span> powered by SQA </span></div>'FROM DUAL]]></expression>
+    </var>
+  </local-vars>
+  <level id="lvl_z9gdo" description="Principal">
+    <container orientacao="V" tamanhoRelativo="100">
+      <container orientacao="V" tamanhoRelativo="16">
+        <container orientacao="V" tamanhoRelativo="100">
+          <simple-value id="svl_as8ymb6" tamTexto="25">
+            <value-expression><![CDATA[$V_LOGO<style>    .reset {        position: relative;        width: 100%;        margin: 0;        padding: 0;        box-sizing: border-box;        text-align: right;        display: flex;        flex-direction: row;        justify-content: center;        align-items: center;        font-family: 'Oswald', sans-serif;    }        .titulo {        font-size: 6vh;        font-style: bold;    }.button {        text-align: center;        width: 65%;        height: 12vh;        margin-left: 20%;        font-size: 4.0vh;        font-style: bold;        color: white;        text-shadow: #000 1px 1px 10px;        border: transparent;        background-color: white;        border-radius: 50px;	     box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;    }    .bt1{        background: linear-gradient(90deg, rgba(106,252,69,1) 0%, rgba(69,252,109,1) 50%, rgba(69,252,185,1) 100%);    }    .bt2{        background: linear-gradient(90deg, rgba(69,252,185,1) 0%, rgba(69,252,216,1) 50%, rgba(69,251,252,1) 100%);    }    .bt3{        background: linear-gradient(90deg, rgba(69,239,252,1) 0%, rgba(69,211,252,1) 50%, rgba(69,186,252,1) 100%);    }    .bt4{        background: linear-gradient(90deg, rgba(69,186,252,1) 0%, rgba(69,131,252,1) 50%, rgba(69,88,252,1) 100%);    }    .bt5{        background: linear-gradient(90deg, rgba(252,69,69,1) 0%, rgba(252,118,69,1) 50%, rgba(252,173,69,1) 100%);    }    .bt6{        background: linear-gradient(90deg, rgba(252,173,69,1) 0%, rgba(252,219,69,1) 50%, rgba(248,252,69,1) 100%);    }    .bt7 {        background: linear-gradient(90deg, rgba(0,92,64, 1) 0%, rgba(0,92,64, 1) 50%, rgba(0,92,64, 1) 100%);    }    @font-face {        font-family: 'Oswald';        src: url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap');    }</style>]]></value-expression>
+          </simple-value>
+        </container>
+      </container>
+      <container orientacao="V" tamanhoRelativo="16">
+        <simple-value id="svl_qg8wpm" tamTexto="12">
+          <value-expression><![CDATA[<html><body><div class="reset"></div><button class="button bt7"> Posição de Fornecedores </button></div></body></html>]]></value-expression>
+          <on-click navigate-to="lvl_as8ymdu"/>
+        </simple-value>
+      </container>
+      <container orientacao="V" tamanhoRelativo="16">
+        <simple-value id="svl_qg8wpo">
+          <value-expression><![CDATA[<html><body><div class="reset"></div><button class="button bt7"> Posição de Clientes </button></div></body></html>]]></value-expression>
+          <on-click navigate-to="lvl_as8ymdv"/>
+        </simple-value>
+      </container>
+      <container orientacao="V" tamanhoRelativo="16">
+        <simple-value id="svl_qg8wpp">
+          <value-expression><![CDATA[<html><body><div class="reset"></div><button class="button bt7"> Movimento de  Fornecedores </button></div></body></html>]]></value-expression>
+          <on-click navigate-to="lvl_qg8wm9">
+            <param id="CODPARC"/>
+          </on-click>
+        </simple-value>
+      </container>
+      <container orientacao="V" tamanhoRelativo="16">
+        <simple-value id="svl_qg8wpq">
+          <value-expression><![CDATA[<html><body><div class="reset"></div><button class="button bt7"> Movimento de clientes </button></div></body></html>]]></value-expression>
+          <on-click navigate-to="lvl_qg8wof">
+            <param id="CODPARC"/>
+          </on-click>
+        </simple-value>
+      </container>
+      <container orientacao="H" tamanhoRelativo="16">
+        <container orientacao="V" tamanhoRelativo="321"/>
+        <container orientacao="V" tamanhoRelativo="100">
+          <simple-value id="svl_aiwjag3">
+            <value-expression><![CDATA[$V_LOGO3 <a href="http://sqabrasil.com/">$V_LOGO2]]></value-expression>
+          </simple-value>
+        </container>
+      </container>
+    </container>
+  </level>
+  <level id="lvl_as8ymdu" description="POSFORN">
+    <args>
+      <arg id="A_CODPARC" type="integer"/>
+    </args>
+    <container orientacao="V" tamanhoRelativo="100">
+      <container orientacao="V" tamanhoRelativo="120">
+        <simple-value id="svl_as8ymfe">
+          <expression type="sql" data-source="MGEDS"><![CDATA[SELECT :POSICAO AS DATA FROM DUAL]]></expression>
+          <metadata>
+            <field name="DATA" label="DATA" type="D" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          </metadata>
+          <value-expression><![CDATA[<br>
+<div style='text-align: center;'><b>Posicao de Fornecedores</b>  -  <b>Data:</b> $DATA</div>]]></value-expression>
+        </simple-value>
+      </container>
+      <container orientacao="V" tamanhoRelativo="464">
+        <grid id="grd_as8ymfd" useNewGrid="S">
+          <title><![CDATA[POSICAO POR PARCEIRO]]></title>
+          <expression type="sql" data-source="MGEDS"><![CDATA[SELECT TPOS2.*,(TPOS2.VLRDESDOB-TPOS2.VLRBAIXA) AS VLRABERTO FROM (
+SELECT TPOS.CODPARC,SUM(TPOS.VLRDESDOB) AS VLRDESDOB,SUM(TPOS.VLRBAIXA) AS VLRBAIXA FROM (
+SELECT FIN.CODPARC,0 AS VLRDESDOB,SUM(FIN.VLRDESDOB) AS VLRBAIXA FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+LEFT JOIN AD_SALDOCTB SC ON SC.EMPRESA = FIN.CODEMP AND SC.NROSIA = FIN.AD_NUSIA AND SC.TIPO = 'FORNECEDOR' AND TO_CHAR(SC.DESDOBRAMENTO) = FIN.DESDOBRAMENTO
+WHERE (FIN.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL) AND FIN.PROVISAO = 'N'
+  AND FIN.RECDESP = -1 AND PAR.CODCTACTB2 = 79
+  AND FIN.CODEMP IN :CODEMP AND TRUNC(FIN.DHBAIXA) <= :POSICAO AND FIN.DHBAIXA IS NOT NULL
+  AND (FIN.AD_NUSIA IS NULL OR SC.NROSIA IS NOT NULL)
+  /*Essa condição acima elimina alguns títulos que vieram do SIA, que não devem ser considerados, como por exemplo do Bradesco que não integra a conta 79*/
+AND (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC2' OR CODCTACTB = '79') OR FIN.CODTIPOPER IN (2021))
+GROUP BY FIN.CODPARC
+UNION ALL
+SELECT FIN.CODPARC,SUM(FIN.VLRDESDOB) AS VLRDESDOB,0 AS VLRBAIXA FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+LEFT JOIN TGFREN REN ON ABS(REN.NUFIN) = ABS(FIN.NUFIN)
+LEFT JOIN AD_SALDOCTB SC ON SC.EMPRESA = FIN.CODEMP AND SC.NROSIA = FIN.AD_NUSIA AND SC.TIPO = 'FORNECEDOR' AND TO_CHAR(SC.DESDOBRAMENTO) = FIN.DESDOBRAMENTO
+WHERE (FIN.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL) AND PAR.CODCTACTB2 = 79
+  AND (REN.NURENEGORIG IS NULL OR REN.NURENEGORIG = 0)
+  AND FIN.CODEMP IN :CODEMP AND (SC.NROSIA IS NOT NULL OR (TRUNC(NVL(FIN.DTENTSAI,FIN.DTNEG)) <= :POSICAO AND FIN.AD_NUSIA IS NULL))
+  /*Essa condição acima elimina alguns títulos que vieram do SIA, que não devem ser considerados, como por exemplo do Bradesco que não integra a conta 79
+  --Condição acima contempla títulos que vieram do SIA, mas que estão com a data de entrada e saída errada.*/
+AND FIN.PROVISAO = 'N' AND (FIN.RECDESP = 0 AND FIN.NURENEG IS NOT NULL OR (FIN.RECDESP = -1 AND FIN.NURENEG IS NULL))
+AND (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC2' OR CODCTACTB = '79') OR FIN.CODTIPOPER IN (2021))
+GROUP BY FIN.CODPARC) TPOS GROUP BY TPOS.CODPARC) TPOS2 WHERE TPOS2.VLRDESDOB-TPOS2.VLRBAIXA != 0]]></expression>
+          <metadata>
+            <field name="CODPARC" label="Cód. Parceiro" type="I" visible="true" useFooter="false"/>
+            <field name="VLRDESDOB" label="Vlr. Desdob." type="F" visible="true" useFooter="SUM" mask="#.##0,00;(n)"/>
+            <field name="VLRBAIXA" label="Vlr. Baixa" type="F" visible="true" useFooter="SUM" mask="#.##0,00;(n)"/>
+            <field name="VLRABERTO" label="Vlr. Aberto" type="F" visible="true" useFooter="SUM" mask="#.##0,00;(n)"/>
+          </metadata>
+          <refresh-details ui-list="grd_yhohxh">
+            <param id="A_CODPARC">$CODPARC</param>
+          </refresh-details>
+        </grid>
+      </container>
+      <container orientacao="V" tamanhoRelativo="362">
+        <grid id="grd_yhohxh" useNewGrid="S">
+          <args>
+            <arg id="A_CODPARC" type="integer"/>
+          </args>
+          <title><![CDATA[POSICAO POR PARCEIRO]]></title>
+          <expression type="sql" data-source="MGEDS"><![CDATA[SELECT FIN.NUFIN,FIN.NUMNOTA,FIN.AD_NUSIA,FIN.DTENTSAI,FIN.DTNEG,FIN.DHBAIXA,FIN.CODTIPOPER,FIN.CODTIPOPERBAIXA,FIN.CODPARC,PAR.RAZAOSOCIAL,FIN.NURENEG,fin.vlrdesdob AS VLRDESDOB,FIN.VLRDESDOB AS VLRBAIXA FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+LEFT JOIN AD_SALDOCTB SC ON SC.EMPRESA = FIN.CODEMP AND SC.NROSIA = FIN.AD_NUSIA AND SC.TIPO = 'FORNECEDOR' AND TO_CHAR(SC.DESDOBRAMENTO) = FIN.DESDOBRAMENTO
+WHERE (FIN.CODPARC = :A_CODPARC) AND FIN.PROVISAO = 'N'
+  AND FIN.RECDESP = -1 AND PAR.CODCTACTB2 = 79
+  AND FIN.CODEMP IN :CODEMP AND TRUNC(FIN.DHBAIXA) <= :POSICAO AND FIN.DHBAIXA IS NOT NULL
+  AND (FIN.AD_NUSIA IS NULL OR SC.NROSIA IS NOT NULL)
+  /*Essa condição acima elimina alguns títulos que vieram do SIA, que não devem ser considerados, como por exemplo do Bradesco que não integra a conta 79*/
+AND (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC2' OR CODCTACTB = '79') OR FIN.CODTIPOPER IN (2021))
+AND ((TRUNC(FIN.DHBAIXA) BETWEEN :PERIODO.INI AND :PERIODO.FIN) OR :MOVIMENTO <> 'S' )
+UNION
+SELECT FIN.NUFIN,FIN.NUMNOTA,FIN.AD_NUSIA,FIN.DTENTSAI,FIN.DTNEG,FIN.DHBAIXA,FIN.CODTIPOPER,FIN.CODTIPOPERBAIXA,FIN.CODPARC,PAR.RAZAOSOCIAL,FIN.NURENEG,FIN.VLRDESDOB AS VLRDESDOB,fin.vlrbaixa AS VLRBAIXA FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+LEFT JOIN TGFREN REN ON ABS(REN.NUFIN) = ABS(FIN.NUFIN)
+LEFT JOIN AD_SALDOCTB SC ON SC.EMPRESA = FIN.CODEMP AND SC.NROSIA = FIN.AD_NUSIA AND SC.TIPO = 'FORNECEDOR' AND TO_CHAR(SC.DESDOBRAMENTO) = FIN.DESDOBRAMENTO
+WHERE (FIN.CODPARC = :A_CODPARC) AND PAR.CODCTACTB2 = 79
+  AND (REN.NURENEGORIG IS NULL OR REN.NURENEGORIG = 0)
+  AND FIN.CODEMP IN :CODEMP AND (SC.NROSIA IS NOT NULL OR (TRUNC(NVL(FIN.DTENTSAI,FIN.DTNEG)) <= :POSICAO AND FIN.AD_NUSIA IS NULL))
+  /*Essa condição acima elimina alguns títulos que vieram do SIA, que não devem ser considerados, como por exemplo do Bradesco que não integra a conta 79
+  --Condição acima contempla títulos que vieram do SIA, mas que estão com a data de entrada e saída errada.*/
+AND FIN.PROVISAO = 'N' AND (FIN.RECDESP = 0 AND FIN.NURENEG IS NOT NULL OR (FIN.RECDESP = -1 AND FIN.NURENEG IS NULL))
+AND (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC2' OR CODCTACTB = '79') OR FIN.CODTIPOPER IN (2021))
+AND ((CASE WHEN FIN.AD_NUSIA IS NOT NULL AND FIN.DTENTSAI > '31/05/2021' THEN to_date('30/05/2021') ELSE TRUNC(NVL(FIN.DTENTSAI,FIN.DTNEG)) END BETWEEN :PERIODO.INI AND :PERIODO.FIN) OR :MOVIMENTO <> 'S' )
+
+]]></expression>
+          <metadata>
+            <field name="NUFIN" label="Nro Unico" type="I" visible="true" useFooter="false"/>
+            <field name="NUMNOTA" label="Nro. Nota" type="I" visible="true" useFooter="false"/>
+            <field name="AD_NUSIA" label="AD_NUSIA" type="I" visible="false" useFooter="false"/>
+            <field name="DTENTSAI" label="Dt. Entrada e Saida" type="D" visible="true" useFooter="false"/>
+            <field name="DTNEG" label="Dt. neg." type="D" visible="true" useFooter="false"/>
+            <field name="DHBAIXA" label="Dt. Baixa" type="D" visible="true" useFooter="false"/>
+            <field name="CODTIPOPER" label="TOP" type="I" visible="true" useFooter="false"/>
+            <field name="CODTIPOPERBAIXA" label="TOP Baixa" type="I" visible="true" useFooter="false"/>
+            <field name="CODPARC" label="Cód. Parceiro" type="I" visible="true" useFooter="false"/>
+            <field name="RAZAOSOCIAL" label="Razão Social" type="S" visible="true" useFooter="false"/>
+            <field name="NURENEG" label="Nu. Reneg." type="I" visible="true" useFooter="false"/>
+            <field name="VLRDESDOB" label="Vlr. Desdob." type="F" visible="true" useFooter="false" mask="R$ #.##0,00"/>
+            <field name="VLRBAIXA" label="Vlr. Baixa" type="F" visible="true" useFooter="false" mask="R$ #.##0,00"/>
+          </metadata>
+        </grid>
+      </container>
+    </container>
+  </level>
+  <level id="lvl_as8ymdv" description="POSCLIEN">
+    <args>
+      <arg id="A_CODPARC" type="integer"/>
+    </args>
+    <container orientacao="V" tamanhoRelativo="100">
+      <container orientacao="V" tamanhoRelativo="126">
+        <simple-value id="svl_as8ymfz">
+          <expression type="sql" data-source="MGEDS"><![CDATA[SELECT :POSICAO AS DATA FROM DUAL]]></expression>
+          <metadata>
+            <field name="DATA" label="DATA" type="S" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          </metadata>
+          <value-expression><![CDATA[<br>
+<div style='text-align: center;'><b>Posicao de Clientes</b>  -  <b>Data:</b> $DATA</div>]]></value-expression>
+        </simple-value>
+      </container>
+      <container orientacao="V" tamanhoRelativo="539">
+        <grid id="grd_as8ymfy" useNewGrid="S">
+          <title><![CDATA[POSICAO POR PARCEIRO]]></title>
+          <expression type="sql" data-source="MGEDS"><![CDATA[SELECT TPOS2.*,(TPOS2.VLRDESDOB-TPOS2.VLRBAIXA) AS VLRABERTO FROM (
+SELECT TPOS.CODPARC,SUM(TPOS.VLRDESDOB) AS VLRDESDOB,SUM(TPOS.VLRBAIXA) AS VLRBAIXA FROM (
+SELECT FIN.CODPARC,0 AS VLRDESDOB,SUM(FIN.VLRDESDOB) AS VLRBAIXA FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+WHERE (FIN.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL) AND FIN.PROVISAO = 'N'
+  AND FIN.RECDESP = 1 AND PAR.CODCTACTB = 21
+  AND FIN.CODEMP IN :CODEMP AND TRUNC(FIN.DHBAIXA) <= :POSICAO AND FIN.DHBAIXA IS NOT NULL
+AND (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC1' OR CODCTACTB = '21') OR FIN.CODTIPOPER IN (2014,2007,1331))
+GROUP BY FIN.CODPARC
+UNION ALL
+SELECT FIN.CODPARC,SUM(FIN.VLRDESDOB) AS VLRDESDOB,0 AS VLRBAIXA FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+LEFT JOIN TGFREN REN ON ABS(REN.NUFIN) = ABS(FIN.NUFIN)
+WHERE (FIN.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL) AND PAR.CODCTACTB = 21
+  AND (REN.NURENEGORIG IS NULL OR REN.NURENEGORIG = 0)
+  AND FIN.CODEMP IN :CODEMP AND (TRUNC(NVL(FIN.DTENTSAI,FIN.DTNEG)) <= :POSICAO OR (FIN.AD_NUSIA IS NOT NULL AND FIN.CODTIPOPER NOT IN (2007)))
+AND FIN.PROVISAO = 'N' AND (FIN.RECDESP = 0 AND FIN.NURENEG IS NOT NULL OR (FIN.RECDESP = 1 AND FIN.NURENEG IS NULL))
+AND (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC1' OR CODCTACTB = '21') OR FIN.CODTIPOPER IN (2014,2007,1331))
+GROUP BY FIN.CODPARC) TPOS GROUP BY TPOS.CODPARC) TPOS2 WHERE TPOS2.VLRDESDOB-TPOS2.VLRBAIXA != 0]]></expression>
+          <metadata>
+            <field name="CODPARC" label="Cód. Parceiro" type="I" visible="true" useFooter="false"/>
+            <field name="VLRDESDOB" label="Vlr. Desdobramento" type="F" visible="true" useFooter="SUM" mask="#.##0,00;(n)"/>
+            <field name="VLRBAIXA" label="Vlr. Baixa" type="F" visible="true" useFooter="SUM" mask="#.##0,00;(n)"/>
+            <field name="VLRABERTO" label="Vlr Aberto" type="F" visible="true" useFooter="SUM" mask="#.##0,00;(n)"/>
+          </metadata>
+          <refresh-details ui-list="grd_afpqutx">
+            <param id="A_CODPARC">$CODPARC</param>
+          </refresh-details>
+        </grid>
+      </container>
+      <container orientacao="V" tamanhoRelativo="443">
+        <grid id="grd_afpqutx" useNewGrid="S">
+          <args>
+            <arg id="A_CODPARC" type="integer"/>
+          </args>
+          <expression type="sql" data-source="MGEDS"><![CDATA[SELECT FIN.NUFIN,FIN.NUMNOTA,FIN.AD_NUSIA,nvl(FIN.DTENTSAI, fin.dtneg) dtentsai,FIN.DTNEG,FIN.DHBAIXA,FIN.CODTIPOPER,FIN.CODTIPOPERBAIXA,FIN.CODPARC,PAR.RAZAOSOCIAL,FIN.NURENEG,FIN.VLRDESDOB AS VLRDESDOB,FIN.VLRDESDOB AS VLRBAIXA FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+WHERE (FIN.CODPARC = :A_CODPARC) AND FIN.PROVISAO = 'N'
+  AND FIN.RECDESP = 1 AND PAR.CODCTACTB = 21
+  AND FIN.CODEMP IN :CODEMP AND TRUNC(FIN.DHBAIXA) <= :POSICAO AND FIN.DHBAIXA IS NOT NULL
+AND (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC1' OR CODCTACTB = '21') OR FIN.CODTIPOPER IN (2014))
+AND ((TRUNC(FIN.DHBAIXA) BETWEEN :PERIODO.INI AND :PERIODO.FIN) OR :MOVIMENTO <> 'S' )
+
+UNION
+
+SELECT FIN.NUFIN,FIN.NUMNOTA,FIN.AD_NUSIA,
+ CASE WHEN FIN.AD_NUSIA IS NOT NULL AND FIN.DTENTSAI > '31/05/2021' THEN to_date('30/05/2021')  ELSE nvl(FIN.DTENTSAI, fin.dtneg) END dtentsai,FIN.DTNEG,FIN.DHBAIXA,FIN.CODTIPOPER,FIN.CODTIPOPERBAIXA,FIN.CODPARC,PAR.RAZAOSOCIAL,FIN.NURENEG,FIN.VLRDESDOB AS VLRDESDOB,FIN.VLRBAIXA AS VLRBAIXA FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+LEFT JOIN TGFREN REN ON ABS(REN.NUFIN) = ABS(FIN.NUFIN)
+WHERE (FIN.CODPARC = :A_CODPARC) AND PAR.CODCTACTB = 21
+  AND (REN.NURENEGORIG IS NULL OR REN.NURENEGORIG = 0)
+  AND FIN.CODEMP IN :CODEMP AND (TRUNC(NVL(FIN.DTENTSAI,FIN.DTNEG)) <= :POSICAO OR FIN.AD_NUSIA IS NOT NULL)
+AND FIN.PROVISAO = 'N' AND (FIN.RECDESP = 0 AND FIN.NURENEG IS NOT NULL OR (FIN.RECDESP = 1 AND FIN.NURENEG IS NULL))
+AND (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC1' OR CODCTACTB = '21') OR FIN.CODTIPOPER IN (2014))
+AND ((CASE WHEN FIN.AD_NUSIA IS NOT NULL AND FIN.DTENTSAI > '31/05/2021' THEN to_date('30/05/2021') ELSE TRUNC(NVL(FIN.DTENTSAI,FIN.DTNEG)) END BETWEEN :PERIODO.INI AND :PERIODO.FIN) OR :MOVIMENTO <> 'S' )
+
+]]></expression>
+          <metadata>
+            <field name="NUFIN" label="NU Financeiro" type="I" visible="true" useFooter="false"/>
+            <field name="NUMNOTA" label="Nro Nota" type="I" visible="true" useFooter="false"/>
+            <field name="AD_NUSIA" label="Nro SIA" type="I" visible="false" useFooter="null"/>
+            <field name="DTENTSAI" label="Dt. Ent. Saida" type="D" visible="true" useFooter="false"/>
+            <field name="DTNEG" label="Dt. Neg." type="D" visible="true" useFooter="false"/>
+            <field name="DHBAIXA" label="Dt. Baixa" type="D" visible="true" useFooter="false"/>
+            <field name="CODTIPOPER" label="TOP" type="I" visible="true" useFooter="false"/>
+            <field name="CODTIPOPERBAIXA" label="TOP Baixa" type="I" visible="true" useFooter="false"/>
+            <field name="CODPARC" label="Parceiro" type="I" visible="true" useFooter="false"/>
+            <field name="RAZAOSOCIAL" label="Razao Social" type="S" visible="true" useFooter="false"/>
+            <field name="NURENEG" label="NU Reneg." type="I" visible="true" useFooter="false"/>
+            <field name="VLRDESDOB" label="Vlr. Desdob." type="F" visible="true" useFooter="SUM" mask="R$ #.##0,00"/>
+            <field name="VLRBAIXA" label="Vlr. Baixa" type="F" visible="true" useFooter="SUM" mask="R$ #.##0,00"/>
+          </metadata>
+        </grid>
+      </container>
+    </container>
+  </level>
+  <level id="lvl_qg8wm9" description="MOVFORN">
+    <args>
+      <arg id="CODPARC" type="integer"/>
+    </args>
+    <container orientacao="V" tamanhoRelativo="100">
+      <container orientacao="V" tamanhoRelativo="195">
+        <simple-value id="svl_qg8wnb">
+          <expression type="sql" data-source="MGEDS"><![CDATA[SELECT :PERIODO.INI DATA, :PERIODO.FIN DATAFIM FROM DUAL]]></expression>
+          <metadata>
+            <field name="DATA" label="DATA" type="S" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+            <field name="DATAFIM" label="DATAFIM" type="S" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          </metadata>
+          <value-expression><![CDATA[<br>
+<div style='text-align: center;'><b>Movimentação dos Fornecedores</b> ]]></value-expression>
+        </simple-value>
+      </container>
+      <container orientacao="V" tamanhoRelativo="834">
+        <grid id="grd_qg8wnc" useNewGrid="S">
+          <expression type="sql" data-source="MGEDS"><![CDATA[SELECT TPOS2.*
+	,(TPOS2.VLRDESDOB - TPOS2.VLRBAIXA) AS VLRABERTO
+FROM (
+	SELECT TPOS.CODPARC
+		,SUM(TPOS.VLRDESDOB) AS VLRDESDOB
+		,SUM(TPOS.VLRBAIXA) AS VLRBAIXA
+	FROM (
+		SELECT FIN.CODPARC
+			,0 AS VLRDESDOB
+			,SUM(FIN.VLRDESDOB) AS VLRBAIXA
+		FROM TGFFIN FIN
+		INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+		LEFT JOIN AD_SALDOCTB SC ON SC.EMPRESA = FIN.CODEMP
+			AND SC.NROSIA = FIN.AD_NUSIA
+			AND SC.TIPO = 'FORNECEDOR'
+			AND TO_CHAR(SC.DESDOBRAMENTO) = FIN.DESDOBRAMENTO
+		WHERE (
+				FIN.CODPARC = :PARCEIRO
+				OR :PARCEIRO IS NULL
+				)
+			AND FIN.PROVISAO = 'N'
+			AND FIN.RECDESP = - 1
+			AND PAR.CODCTACTB2 = 79
+			AND FIN.CODEMP IN :CODEMP
+			AND TRUNC(FIN.DHBAIXA) <= :POSICAO
+			AND FIN.DHBAIXA IS NOT NULL
+			AND (
+				FIN.AD_NUSIA IS NULL
+				OR SC.NROSIA IS NOT NULL
+				)
+			/*Essa condição acima elimina alguns títulos que vieram do SIA, que não devem ser considerados, como por exemplo do Bradesco que não integra a conta 79*/
+			AND (
+				FIN.CODTIPOPER IN (
+					SELECT CODTIPOPER
+					FROM TGFCTB
+					WHERE CODCTACTB = 'PARC2'
+						OR CODCTACTB = '79'
+					)
+				OR FIN.CODTIPOPER IN (2021)
+				)
+		GROUP BY FIN.CODPARC
+		
+		UNION ALL
+		
+		SELECT FIN.CODPARC
+			,SUM(FIN.VLRDESDOB) AS VLRDESDOB
+			,0 AS VLRBAIXA
+		FROM TGFFIN FIN
+		INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+		LEFT JOIN TGFREN REN ON ABS(REN.NUFIN) = ABS(FIN.NUFIN)
+		LEFT JOIN AD_SALDOCTB SC ON SC.EMPRESA = FIN.CODEMP
+			AND SC.NROSIA = FIN.AD_NUSIA
+			AND SC.TIPO = 'FORNECEDOR'
+			AND TO_CHAR(SC.DESDOBRAMENTO) = FIN.DESDOBRAMENTO
+		WHERE (
+				FIN.CODPARC = :PARCEIRO
+				OR :PARCEIRO IS NULL
+				)
+			AND PAR.CODCTACTB2 = 79
+			AND (
+				REN.NURENEGORIG IS NULL
+				OR REN.NURENEGORIG = 0
+				)
+			AND FIN.CODEMP IN :CODEMP
+			AND (
+				SC.NROSIA IS NOT NULL
+				OR (
+					TRUNC(NVL(FIN.DTENTSAI, FIN.DTNEG)) <= :POSICAO
+					AND FIN.AD_NUSIA IS NULL
+					)
+				)
+			/*Essa condição acima elimina alguns títulos que vieram do SIA, que não devem ser considerados, como por exemplo do Bradesco que não integra a conta 79
+  --Condição acima contempla títulos que vieram do SIA, mas que estão com a data de entrada e saída errada.*/
+			AND FIN.PROVISAO = 'N'
+			AND (
+				FIN.RECDESP = 0
+				AND FIN.NURENEG IS NOT NULL
+				OR (
+					FIN.RECDESP = - 1
+					AND FIN.NURENEG IS NULL
+					)
+				)
+			AND (
+				FIN.CODTIPOPER IN (
+					SELECT CODTIPOPER
+					FROM TGFCTB
+					WHERE CODCTACTB = 'PARC2'
+						OR CODCTACTB = '79'
+					)
+				OR FIN.CODTIPOPER IN (2021)
+				)
+		GROUP BY FIN.CODPARC
+		) TPOS
+	GROUP BY TPOS.CODPARC
+	) TPOS2
+WHERE TPOS2.VLRDESDOB - TPOS2.VLRBAIXA <> 0
+]]></expression>
+          <metadata>
+            <field name="CODPARC" label="Cod. Parceiro" type="I" visible="true" useFooter="false"/>
+            <field name="VLRDESDOB" label="Vlr. Desdob." type="F" visible="true" useFooter="false" mask="R$ #.##0,00"/>
+            <field name="VLRBAIXA" label="Vlr. Baixa" type="I" visible="true" useFooter="false" mask="R$ #.##0,00"/>
+            <field name="VLRABERTO" label="Vlr. Aberto" type="I" visible="true" useFooter="false" mask="R$ #.##0,00"/>
+          </metadata>
+          <on-click navigate-to="lvl_qg8wm9"/>
+          <refresh-details ui-list="grd_qg8wo7">
+            <param id="A_CODPARC">$CODPARC</param>
+          </refresh-details>
+        </grid>
+      </container>
+      <container orientacao="V" tamanhoRelativo="947">
+        <grid id="grd_qg8wo7" useNewGrid="S">
+          <args>
+            <arg id="A_CODPARC" type="integer"/>
+          </args>
+          <expression type="sql" data-source="MGEDS"><![CDATA[SELECT FIN.NUFIN
+	,FIN.NUMNOTA
+	,FIN.AD_NUSIA
+	,FIN.DTENTSAI
+	,FIN.DTNEG
+	,FIN.DHBAIXA
+	,FIN.CODTIPOPER
+	,FIN.CODTIPOPERBAIXA
+	,FIN.CODPARC
+	,PAR.RAZAOSOCIAL
+	,FIN.NURENEG
+	,0 AS VLRDESDOB
+	,FIN.VLRDESDOB AS VLRBAIXA
+FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+LEFT JOIN AD_SALDOCTB SC ON SC.EMPRESA = FIN.CODEMP
+	AND SC.NROSIA = FIN.AD_NUSIA
+	AND SC.TIPO = 'FORNECEDOR'
+	AND TO_CHAR(SC.DESDOBRAMENTO) = FIN.DESDOBRAMENTO
+WHERE (FIN.CODPARC = :A_CODPARC)
+	AND FIN.PROVISAO = 'N'
+	AND FIN.RECDESP = - 1
+	AND PAR.CODCTACTB2 = 79
+	AND FIN.CODEMP IN :CODEMP
+	AND TRUNC(FIN.DHBAIXA) <= :POSICAO
+	AND FIN.DHBAIXA IS NOT NULL
+	AND (
+		FIN.AD_NUSIA IS NULL
+		OR SC.NROSIA IS NOT NULL
+		)
+	/*Essa condição acima elimina alguns títulos que vieram do SIA, que não devem ser considerados, como por exemplo do Bradesco que não integra a conta 79*/
+	AND (
+		FIN.CODTIPOPER IN (
+			SELECT CODTIPOPER
+			FROM TGFCTB
+			WHERE CODCTACTB = 'PARC2'
+				OR CODCTACTB = '79'
+			)
+		OR FIN.CODTIPOPER IN (2021)
+		)
+
+UNION ALL
+
+SELECT FIN.NUFIN
+	,FIN.NUMNOTA
+	,FIN.AD_NUSIA
+	,FIN.DTENTSAI
+	,FIN.DTNEG
+	,FIN.DHBAIXA
+	,FIN.CODTIPOPER
+	,FIN.CODTIPOPERBAIXA
+	,FIN.CODPARC
+	,PAR.RAZAOSOCIAL
+	,FIN.NURENEG
+	,FIN.VLRDESDOB AS VLRDESDOB
+	,0 AS VLRBAIXA
+FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+LEFT JOIN TGFREN REN ON ABS(REN.NUFIN) = ABS(FIN.NUFIN)
+LEFT JOIN AD_SALDOCTB SC ON SC.EMPRESA = FIN.CODEMP
+	AND SC.NROSIA = FIN.AD_NUSIA
+	AND SC.TIPO = 'FORNECEDOR'
+	AND TO_CHAR(SC.DESDOBRAMENTO) = FIN.DESDOBRAMENTO
+WHERE (FIN.CODPARC = :A_CODPARC)
+	AND PAR.CODCTACTB2 = 79
+	AND (
+		REN.NURENEGORIG IS NULL
+		OR REN.NURENEGORIG = 0
+		)
+	AND FIN.CODEMP IN :CODEMP
+	AND (
+		SC.NROSIA IS NOT NULL
+		OR (
+			TRUNC(NVL(FIN.DTENTSAI, FIN.DTNEG)) <= :POSICAO
+			AND FIN.AD_NUSIA IS NULL
+			)
+		)
+	/*Essa condição acima elimina alguns títulos que vieram do SIA, que não devem ser considerados, como por exemplo do Bradesco que não integra a conta 79
+  --Condição acima contempla títulos que vieram do SIA, mas que estão com a data de entrada e saída errada.*/
+	AND FIN.PROVISAO = 'N'
+	AND (
+		FIN.RECDESP = 0
+		AND FIN.NURENEG IS NOT NULL
+		OR (
+			FIN.RECDESP = - 1
+			AND FIN.NURENEG IS NULL
+			)
+		)
+	AND (
+		FIN.CODTIPOPER IN (
+			SELECT CODTIPOPER
+			FROM TGFCTB
+			WHERE CODCTACTB = 'PARC2'
+				OR CODCTACTB = '79'
+			)
+		OR FIN.CODTIPOPER IN (2021)
+		)
+]]></expression>
+          <metadata>
+            <field name="NUFIN" label="NU Financeiro" type="I" visible="true" useFooter="false"/>
+            <field name="NUMNOTA" label="Nro Nota" type="I" visible="true" useFooter="false"/>
+            <field name="AD_NUSIA" label="AD_NUSIA" type="I" visible="true" useFooter="false"/>
+            <field name="DTENTSAI" label="Dt. EntSai" type="D" visible="true" useFooter="false"/>
+            <field name="DTNEG" label="Dt. Neg." type="D" visible="true" useFooter="false"/>
+            <field name="DHBAIXA" label="Dt. Baixa" type="D" visible="true" useFooter="false"/>
+            <field name="CODTIPOPER" label="TOP" type="I" visible="true" useFooter="false"/>
+            <field name="CODTIPOPERBAIXA" label="TOP Baixa" type="I" visible="true" useFooter="false"/>
+            <field name="CODPARC" label="Cod Parceiro" type="I" visible="true" useFooter="false"/>
+            <field name="RAZAOSOCIAL" label="Razao Social" type="S" visible="true" useFooter="false"/>
+            <field name="NURENEG" label="NU Reneg." type="I" visible="true" useFooter="false"/>
+            <field name="VLRDESDOB" label="Vlr. Desdob." type="F" visible="true" useFooter="false" mask="R$ #.##0,00"/>
+            <field name="VLRBAIXA" label="Vlr. Baixa" type="F" visible="true" useFooter="false" mask="R$ #.##0,00"/>
+          </metadata>
+          <on-click-launcher resource-id="br.com.sankhya.fin.cad.movimentacaoFinanceira">
+            <NUFIN>$NROUNICO</NUFIN>
+          </on-click-launcher>
+        </grid>
+      </container>
+    </container>
+  </level>
+  <level id="lvl_qg8wof" description="MOVCLIE">
+    <args>
+      <arg id="CODPARC" type="integer"/>
+    </args>
+    <container orientacao="V" tamanhoRelativo="100">
+      <container orientacao="V" tamanhoRelativo="100">
+        <simple-value id="svl_qg8wog">
+          <expression type="sql" data-source="MGEDS"><![CDATA[SELECT :PERIODO.INI DATA, :PERIODO.FIN DATAFIM FROM DUAL]]></expression>
+          <metadata>
+            <field name="DATA" label="DATA" type="S" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+            <field name="DATAFIM" label="DATAFIM" type="S" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          </metadata>
+          <value-expression><![CDATA[<br>
+<div style='text-align: center;'><b>Movimento dos Clientes</b>]]></value-expression>
+        </simple-value>
+      </container>
+      <container orientacao="V" tamanhoRelativo="321">
+        <grid id="grd_qg8woh" useNewGrid="S">
+          <expression type="sql" data-source="MGEDS"><![CDATA[SELECT TPOS2.*
+	,(TPOS2.VLRDESDOB - TPOS2.VLRBAIXA) AS VLRABERTO
+FROM (
+	SELECT TPOS.CODPARC
+		,SUM(TPOS.VLRDESDOB) AS VLRDESDOB
+		,SUM(TPOS.VLRBAIXA) AS VLRBAIXA
+	FROM (
+		SELECT FIN.CODPARC
+			,0 AS VLRDESDOB
+			,SUM(FIN.VLRDESDOB) AS VLRBAIXA
+		FROM TGFFIN FIN
+		INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+		WHERE (
+				FIN.CODPARC = :PARCEIRO
+				OR :PARCEIRO IS NULL
+				)
+			AND FIN.PROVISAO = 'N'
+			AND FIN.RECDESP = 1
+			AND PAR.CODCTACTB = 21
+			AND FIN.CODEMP IN :CODEMP
+			AND TRUNC(FIN.DHBAIXA) <= :POSICAO
+			AND FIN.DHBAIXA IS NOT NULL
+			AND (
+				FIN.CODTIPOPER IN (
+					SELECT CODTIPOPER
+					FROM TGFCTB
+					WHERE CODCTACTB = 'PARC1'
+						OR CODCTACTB = '21'
+					)
+				OR FIN.CODTIPOPER IN (2014,2007)
+				)
+			AND 
+			(
+			TRUNC(FIN.DHBAIXA) BETWEEN :PERIODO.INI
+				AND :PERIODO.FIN
+			)
+		GROUP BY FIN.CODPARC
+		
+		UNION ALL
+		
+		SELECT FIN.CODPARC
+			,SUM(FIN.VLRDESDOB) AS VLRDESDOB
+			,0 AS VLRBAIXA
+		FROM TGFFIN FIN
+		INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+		LEFT JOIN TGFREN REN ON ABS(REN.NUFIN) = ABS(FIN.NUFIN)
+		WHERE (
+				FIN.CODPARC = :PARCEIRO
+				OR :PARCEIRO IS NULL
+				)
+			AND PAR.CODCTACTB = 21
+			AND (
+				REN.NURENEGORIG IS NULL
+				OR REN.NURENEGORIG = 0
+				)
+			AND FIN.CODEMP IN :CODEMP
+			AND (
+				TRUNC(NVL(FIN.DTENTSAI, FIN.DTNEG)) <= :POSICAO
+				OR FIN.AD_NUSIA IS NOT NULL
+				)
+			AND FIN.PROVISAO = 'N'
+			AND (
+				FIN.RECDESP = 0
+				AND FIN.NURENEG IS NOT NULL
+				OR (
+					FIN.RECDESP = 1
+					AND FIN.NURENEG IS NULL
+					)
+				)
+			AND (
+				FIN.CODTIPOPER IN (
+					SELECT CODTIPOPER
+					FROM TGFCTB
+					WHERE CODCTACTB = 'PARC1'
+						OR CODCTACTB = '21'
+					)
+				OR FIN.CODTIPOPER IN (2014,2007)
+				)
+			AND 
+		(
+			CASE 
+				WHEN FIN.AD_NUSIA IS NOT NULL
+					AND FIN.DTENTSAI > '31/05/2021' AND FIN.CODTIPOPER NOT IN (2007)
+					THEN to_date('30/05/2021')
+				ELSE TRUNC(NVL(FIN.DTENTSAI, FIN.DTNEG))
+				END BETWEEN :PERIODO.INI
+				AND :PERIODO.FIN
+
+		)
+		GROUP BY FIN.CODPARC
+		) TPOS
+	GROUP BY TPOS.CODPARC
+	) TPOS2
+WHERE TPOS2.VLRDESDOB - TPOS2.VLRBAIXA <> 0
+]]></expression>
+          <metadata>
+            <field name="CODPARC" label="Cod. Parceiro" type="I" visible="true" useFooter="false"/>
+            <field name="VLRDESDOB" label="Vlr Desdob" type="F" visible="true" useFooter="SUM" mask="#.##0,00"/>
+            <field name="VLRBAIXA" label="Vlr Baixa" type="F" visible="true" useFooter="SUM" mask="#.##0,00"/>
+            <field name="VLRABERTO" label="Vlr. Aberto" type="F" visible="true" useFooter="SUM" mask="#.##0,00"/>
+          </metadata>
+          <refresh-details ui-list="grd_qg8woi">
+            <param id="CODPARC">$CODPARC</param>
+          </refresh-details>
+        </grid>
+      </container>
+      <container orientacao="V" tamanhoRelativo="289">
+        <grid id="grd_qg8woi" useNewGrid="S">
+          <args>
+            <arg id="CODPARC" type="integer"/>
+          </args>
+          <expression type="sql" data-source="MGEDS"><![CDATA[SELECT FIN.NUFIN
+	,FIN.NUMNOTA
+	,FIN.AD_NUSIA
+	,nvl(FIN.DTENTSAI, fin.dtneg) dtentsai
+	,FIN.DTNEG
+	,FIN.DHBAIXA
+	,FIN.CODTIPOPER
+	,FIN.CODTIPOPERBAIXA
+	,FIN.CODPARC
+	,PAR.RAZAOSOCIAL
+	,FIN.NURENEG
+	,0 AS VLRDESDOB
+	,FIN.VLRDESDOB AS VLRBAIXA
+FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+WHERE (FIN.CODPARC = :CODPARC)
+	AND FIN.PROVISAO = 'N'
+	AND FIN.RECDESP = 1
+	AND PAR.CODCTACTB = 21
+	AND FIN.CODEMP IN :CODEMP
+	AND TRUNC(FIN.DHBAIXA) <= :POSICAO
+	AND FIN.DHBAIXA IS NOT NULL
+	AND (
+		FIN.CODTIPOPER IN (
+			SELECT CODTIPOPER
+			FROM TGFCTB
+			WHERE CODCTACTB = 'PARC1'
+				OR CODCTACTB = '21'
+			)
+		OR FIN.CODTIPOPER IN (2014)
+		)
+	AND 
+		(
+			TRUNC(FIN.DHBAIXA) BETWEEN :PERIODO.INI
+				AND :PERIODO.FIN
+			)
+
+		
+
+UNION ALL
+
+SELECT FIN.NUFIN
+	,FIN.NUMNOTA
+	,FIN.AD_NUSIA
+	,CASE 
+		WHEN FIN.AD_NUSIA IS NOT NULL
+			AND FIN.DTENTSAI > '31/05/2021'
+			THEN to_date('30/05/2021')
+		ELSE nvl(FIN.DTENTSAI, fin.dtneg)
+		END dtentsai
+	,FIN.DTNEG
+	,FIN.DHBAIXA
+	,FIN.CODTIPOPER
+	,FIN.CODTIPOPERBAIXA
+	,FIN.CODPARC
+	,PAR.RAZAOSOCIAL
+	,FIN.NURENEG
+	,FIN.VLRDESDOB AS VLRDESDOB
+	,0 AS VLRBAIXA
+FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+LEFT JOIN TGFREN REN ON ABS(REN.NUFIN) = ABS(FIN.NUFIN)
+WHERE (FIN.CODPARC = :CODPARC)
+	AND PAR.CODCTACTB = 21
+	AND (
+		REN.NURENEGORIG IS NULL
+		OR REN.NURENEGORIG = 0
+		)
+	AND FIN.CODEMP IN :CODEMP
+	AND (
+		TRUNC(NVL(FIN.DTENTSAI, FIN.DTNEG)) <= :POSICAO
+		OR FIN.AD_NUSIA IS NOT NULL
+		)
+	AND FIN.PROVISAO = 'N'
+	AND (
+		FIN.RECDESP = 0
+		AND FIN.NURENEG IS NOT NULL
+		OR (
+			FIN.RECDESP = 1
+			AND FIN.NURENEG IS NULL
+			)
+		)
+	AND (
+		FIN.CODTIPOPER IN (
+			SELECT CODTIPOPER
+			FROM TGFCTB
+			WHERE CODCTACTB = 'PARC1'
+				OR CODCTACTB = '21'
+			)
+		OR FIN.CODTIPOPER IN (2014)
+		)
+	AND 
+		(
+			CASE 
+				WHEN FIN.AD_NUSIA IS NOT NULL
+					AND FIN.DTENTSAI > '31/05/2021'
+					THEN to_date('30/05/2021')
+				ELSE TRUNC(NVL(FIN.DTENTSAI, FIN.DTNEG))
+				END BETWEEN :PERIODO.INI
+				AND :PERIODO.FIN
+
+		)
+]]></expression>
+          <metadata>
+            <field name="NUFIN" label="NU Financeiro" type="I" visible="true" useFooter="false"/>
+            <field name="NUMNOTA" label="Nro Nota" type="I" visible="true" useFooter="false"/>
+            <field name="AD_NUSIA" label="AD_NUSIA" type="I" visible="true" useFooter="false"/>
+            <field name="DTENTSAI" label="Dt. EntSai" type="D" visible="true" useFooter="false"/>
+            <field name="DTNEG" label="Dt. Neg" type="D" visible="true" useFooter="false"/>
+            <field name="DHBAIXA" label="Dt. Baixa" type="D" visible="true" useFooter="false"/>
+            <field name="CODTIPOPER" label="TOP" type="I" visible="true" useFooter="false"/>
+            <field name="CODTIPOPERBAIXA" label="TOP Baixa" type="I" visible="true" useFooter="false"/>
+            <field name="CODPARC" label="Cod Parceiro" type="I" visible="true" useFooter="false"/>
+            <field name="RAZAOSOCIAL" label="Razao Social" type="S" visible="true" useFooter="false"/>
+            <field name="NURENEG" label="NU Reneg." type="I" visible="true" useFooter="false"/>
+            <field name="VLRDESDOB" label="Vlr Desdob." type="F" visible="true" useFooter="SUM" mask="#.##0,00"/>
+            <field name="VLRBAIXA" label="Vlr. Baixa" type="F" visible="true" useFooter="SUM" mask="#.##0,00"/>
+          </metadata>
+        </grid>
+      </container>
+    </container>
+  </level>
+  <level id="lvl_afjpqwb" description="BACKUP_POSI_CLIENTE">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_afkgery" useNewGrid="S">
+        <title><![CDATA[POSICAO POR PARCEIRO]]></title>
+        <expression type="sql" data-source="MGEDS"><![CDATA[select * from (
+select
+*
+
+FROM
+
+(SELECT -- COM RENEG
+    FIN.CODEMP,
+	PAR.CODCTACTB2 AS CONTAFORN,
+	PAR.CODPARC,
+	PAR.RAZAOSOCIAL,
+	FIN.AD_NUSIA,
+	FIN.NURENEG,
+	FIN.RECDESP,
+	FIN.NUFIN,
+	FIN.DTENTSAI,
+	FIN.DHBAIXA,
+	'RENEG' AS TIPO,
+	'LEGADO' AS TIPO2,
+	((FIN.VLRDESDOB) * CASE WHEN TPO.TIPMOV = 'E' THEN (-1) ELSE 1 END) VALOR
+FROM
+	TGFFIN FIN
+	INNER JOIN TGFTOP TPO ON TPO.CODTIPOPER = FIN.CODTIPOPER AND TPO.DHALTER = FIN.DHTIPOPER
+	INNER JOIN TSIEMP EMP ON FIN.CODEMP = EMP.CODEMP
+	INNER JOIN TGFPAR PAR ON FIN.CODPARC = PAR.CODPARC
+	INNER JOIN TGFNAT NAT ON FIN.CODNAT = NAT.CODNAT
+WHERE
+   FIN.PROVISAO = 'N'
+	--AND FIN.RECDESP = 0
+	AND ( FIN.NURENEG IS NOT NULL)
+	/*AND (TPO.TIPMOV IN ('C','E','I')  AND TPO.ATUALFIN <> 0)
+	AND EXISTS (SELECT 1 FROM AD_SALDOCTB A WHERE TIPO = 'CLIENTE' AND NROSIA = FIN.AD_NUSIA AND DESDOBRAMENTO = FIN.DESDOBRAMENTO AND EMPRESA = FIN.CODEMP)*/
+	AND FIN.codtipoper = 2014
+	AND FIN.CODEMP IN :CODEMP
+	AND(FIN.DHBAIXA IS NULL OR trunc(FIN.DHBAIXA) > :POSICAO)
+
+UNION ALL
+
+SELECT --SEM RENEG
+    FIN.CODEMP,
+	PAR.CODCTACTB2 AS CONTAFORN,
+	PAR.CODPARC,
+	PAR.RAZAOSOCIAL,
+	FIN.AD_NUSIA,
+	FIN.NURENEG,
+	FIN.RECDESP,
+	FIN.NUFIN,
+	FIN.DTENTSAI,
+	FIN.DHBAIXA,
+	'SEM RENEG' AS TIPO,
+	'LEGADO' AS TIPO2,
+	((FIN.VLRDESDOB) * CASE WHEN TPO.TIPMOV = 'E' THEN (-1) ELSE 1 END) VALOR
+FROM
+	TGFFIN FIN
+	INNER JOIN TGFTOP TPO ON TPO.CODTIPOPER = FIN.CODTIPOPER AND TPO.DHALTER = FIN.DHTIPOPER
+	INNER JOIN TSIEMP EMP ON FIN.CODEMP = EMP.CODEMP
+	INNER JOIN TGFPAR PAR ON FIN.CODPARC = PAR.CODPARC
+	INNER JOIN TGFNAT NAT ON FIN.CODNAT = NAT.CODNAT
+WHERE
+   FIN.PROVISAO = 'N'
+	AND FIN.RECDESP <> 0
+	AND FIN.NURENEG IS NULL
+		AND ((TPO.TIPMOV IN ('V','D','I')
+			--AND (SELECT STATUSNOTA FROM TGFCAB WHERE NUNOTA = FIN.NUNOTA) = 'L' AND TPO.ATUALFIN <> 0
+))
+	AND EXISTS (SELECT 1 FROM AD_SALDOCTB A WHERE TIPO = 'CLIENTE' AND  NROSIA = FIN.AD_NUSIA AND DESDOBRAMENTO = FIN.DESDOBRAMENTO AND EMPRESA = FIN.CODEMP AND VALOR = FIN.VLRDESDOB)
+	AND FIN.codtipoper = 2014
+	AND FIN.CODEMP IN :CODEMP
+	AND(FIN.DHBAIXA IS NULL OR trunc(FIN.DHBAIXA) > :POSICAO)
+)z
+
+UNION ALL
+
+
+SELECT
+
+*
+
+FROM
+
+(SELECT
+    FIN.CODEMP,
+	PAR.CODCTACTB2 AS CONTAFORN,
+	PAR.CODPARC,
+	PAR.RAZAOSOCIAL,
+	FIN.AD_NUSIA,
+	FIN.NURENEG,
+	FIN.RECDESP,
+	FIN.NUFIN,
+	FIN.DTENTSAI,
+	FIN.DHBAIXA,
+	'SEM RENEG' AS TIPO,
+	'LEGADO' AS TIPO2,
+	((FIN.VLRDESDOB) * CASE WHEN TPO.TIPMOV = 'E' THEN (-1) ELSE 1 END) VALOR
+FROM
+	TGFFIN FIN
+	INNER JOIN TGFTOP TPO ON TPO.CODTIPOPER = FIN.CODTIPOPER AND TPO.DHALTER = FIN.DHTIPOPER
+	INNER JOIN TSIEMP EMP ON FIN.CODEMP = EMP.CODEMP
+	INNER JOIN TGFPAR PAR ON FIN.CODPARC = PAR.CODPARC
+	INNER JOIN TGFNAT NAT ON FIN.CODNAT = NAT.CODNAT
+WHERE
+   FIN.PROVISAO = 'N'
+	AND FIN.RECDESP = 1
+	--AND FIN.NURENEG IS NULL
+	AND NVL(trunc(FIN.DTENTSAI), trunc(FIN.DTNEG)) <= :POSICAO
+	AND (FIN.DHBAIXA IS NULL OR trunc(FIN.DHBAIXA) > :POSICAO)
+	AND FIN.CODEMP IN :CODEMP
+	AND	FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC' OR CODCTACTB = '21')
+	AND PAR.CODCTACTB = 21
+
+/*
+UNION ALL --RENEGOCIADOS, ORIGEM FINANCEIRO, SEMTOPDEV.CHEQUE:
+
+
+SELECT
+    FIN.CODEMP,
+	PAR.CODCTACTB2 AS CONTAFORN,
+	PAR.CODPARC,
+	PAR.RAZAOSOCIAL,
+	FIN.AD_NUSIA,
+	FIN.NURENEG,
+	FIN.RECDESP,
+	FIN.NUFIN,
+	FIN.DTENTSAI,
+	FIN.DHBAIXA,
+	'RENEG' AS TIPO,
+	'LEGADO' AS TIPO2,
+	((FIN.VLRDESDOB) * CASE WHEN TPO.TIPMOV = 'E' THEN (-1) ELSE 1 END) VALOR
+FROM
+	TGFFIN FIN
+	INNER JOIN TGFTOP TPO ON TPO.CODTIPOPER = FIN.CODTIPOPER AND TPO.DHALTER = FIN.DHTIPOPER
+	INNER JOIN TSIEMP EMP ON FIN.CODEMP = EMP.CODEMP
+	INNER JOIN TGFPAR PAR ON FIN.CODPARC = PAR.CODPARC
+	INNER JOIN TGFNAT NAT ON FIN.CODNAT = NAT.CODNAT
+WHERE
+	FIN.PROVISAO = 'N'
+	AND FIN.RECDESP = 0
+	AND FIN.NURENEG IS NOT NULL
+	AND NVL(FIN.DTENTSAI, FIN.DTNEG) <= :POSICAO
+	AND (FIN.DHBAIXA IS NULL OR FIN.DHBAIXA > :POSICAO)
+	AND FIN.CODEMP IN :CODEMP
+	AND	FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC' OR CODCTACTB = '21')
+	AND FIN.CODTIPOPER NOT IN (SELECT CODTIPOPER FROM AD_CENTPARAMTOP WHERE NUPAR = 16)
+	AND PAR.CODCTACTB = 21
+
+*/
+
+	)Z
+order by 4 desc) TITP
+where ((TITP.RECDESP = 1 AND (TITP.NURENEG IS NULL OR TITP.NURENEG NOT IN (SELECT AFTRENEG FROM (
+SELECT * FROM (
+SELECT DISTINCT FT.NURENEG AS BEFRENEG FROM TGFFIN FT WHERE FT.NURENEG IN (
+SELECT
+      DISTINCT FIN.NURENEG
+FROM TGFFIN FIN
+WHERE FIN.CODEMP IN :CODEMP AND trunc(FIN.DTNEG) <= :POSICAO AND (
+trunc(FIN.DHBAIXA) >= :POSICAO OR FIN.DHBAIXA IS NULL)
+AND FIN.NURENEG IS NOT NULL) AND trunc(FT.DTNEG) <= :POSICAO) RBEF
+INNER JOIN (
+SELECT DISTINCT FT.NURENEG AS AFTRENEG FROM TGFFIN FT WHERE FT.NURENEG IN (
+SELECT
+      DISTINCT FIN.NURENEG
+FROM TGFFIN FIN
+WHERE FIN.CODEMP IN :CODEMP AND trunc(FIN.DTNEG) <= :POSICAO AND (
+trunc(FIN.DHBAIXA) >= :POSICAO OR FIN.DHBAIXA IS NULL)
+AND FIN.NURENEG IS NOT NULL) AND trunc(FT.DTNEG) >= :POSICAO) RAFT ON RAFT.AFTRENEG = RBEF.BEFRENEG) RENEG))) OR (TITP.RECDESP = 0 AND TITP.NURENEG IN (SELECT AFTRENEG FROM (
+SELECT * FROM (
+SELECT DISTINCT FT.NURENEG AS BEFRENEG FROM TGFFIN FT WHERE FT.NURENEG IN (
+SELECT
+      DISTINCT FIN.NURENEG
+FROM TGFFIN FIN
+WHERE FIN.CODEMP IN :CODEMP AND trunc(FIN.DTNEG) <= :POSICAO AND (
+trunc(FIN.DHBAIXA) >= :POSICAO OR FIN.DHBAIXA IS NULL)
+AND FIN.NURENEG IS NOT NULL) AND trunc(FT.DTNEG) <= :POSICAO) RBEF
+INNER JOIN (
+SELECT DISTINCT FT.NURENEG AS AFTRENEG FROM TGFFIN FT WHERE FT.NURENEG IN (
+SELECT
+      DISTINCT FIN.NURENEG
+FROM TGFFIN FIN
+WHERE FIN.CODEMP IN :CODEMP AND trunc(FIN.DTNEG) <= :POSICAO AND (
+trunc(FIN.DHBAIXA) >= :POSICAO OR FIN.DHBAIXA IS NULL)
+AND FIN.NURENEG IS NOT NULL) AND trunc(FT.DTNEG) >= :POSICAO) RAFT ON RAFT.AFTRENEG = RBEF.BEFRENEG) RENEG)))]]></expression>
+        <metadata>
+          <field name="CODEMP" label="Cod Empresa" type="I" visible="true" useFooter="false"/>
+          <field name="CONTAFORN" label="Conta" type="I" visible="true" useFooter="false"/>
+          <field name="CODPARC" label="Cód. Parceiro" type="I" visible="true" useFooter="false"/>
+          <field name="RAZAOSOCIAL" label="Razao Social" type="S" visible="true" useFooter="false"/>
+          <field name="AD_NUSIA" label="AD_NUSIA" type="I" visible="false" useFooter="false"/>
+          <field name="NURENEG" label="NURENEG" type="I" visible="false" useFooter="false"/>
+          <field name="RECDESP" label="RECDESP" type="I" visible="false" useFooter="false"/>
+          <field name="NUFIN" label="Nro Unico" type="I" visible="true" useFooter="false"/>
+          <field name="DTENTSAI" label="Dt. Entrada e Saida" type="D" visible="true" useFooter="false"/>
+          <field name="DHBAIXA" label="Dt. Baixa" type="D" visible="true" useFooter="false"/>
+          <field name="TIPO" label="TIPO" type="S" visible="true" useFooter="false"/>
+          <field name="TIPO2" label="Legado" type="S" visible="true" useFooter="false"/>
+          <field name="VALOR" label="Valor" type="F" visible="true" useFooter="true" mask="R$ #.##0,00"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+  <level id="lvl_afjpqwc" description="BACKUP_MOV_CLIENTE">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_afkgeqx" useNewGrid="S">
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT
+CODPARC,
+CONTAFORN,
+RAZAOSOCIAL,
+SUM(DEBITO) AS DEBITO,
+SUM(CREDITO) AS CREDITO,
+SUM(ABS(DEBITO)-ABS(CREDITO)) AS SALDO
+FROM
+(SELECT --ORIGEM CAB
+	CAB.CODPARC,
+	PAR.CODCTACTB AS CONTAFORN,
+	PAR.RAZAOSOCIAL,
+	'PORTAL' AS TIPO,
+	(CASE WHEN TPO.TIPMOV = 'V' THEN CAB.VLRNOTA - CASE WHEN NVL(FIN.VLRDESDOB,0) = 0 THEN 0 ELSE (CAB.VLRNOTA - NVL(FIN.VLRDESDOB,0)) END ELSE 0 END) AS DEBITO,
+	(CASE WHEN TPO.TIPMOV = 'D' THEN CAB.VLRNOTA - CASE WHEN NVL(FIN.VLRDESDOB,0) = 0 THEN 0 ELSE (CAB.VLRNOTA - NVL(FIN.VLRDESDOB,0)) END ELSE 0 END)*-1 AS CREDITO
+
+FROM 
+	TGFCAB CAB
+	INNER JOIN TGFTOP TPO ON TPO.DHALTER = CAB.DHTIPOPER AND TPO.CODTIPOPER = CAB.CODTIPOPER
+	INNER JOIN TSIEMP EMP ON CAB.CODEMP = EMP.CODEMP
+	INNER JOIN TGFPAR PAR ON CAB.CODPARC = PAR.CODPARC
+	INNER JOIN TGFNAT NAT ON CAB.CODNAT = NAT.CODNAT
+     LEFT JOIN (SELECT FS.NUNOTA,SUM(NVL(FS.VLRDESDOB,0)) AS VLRDESDOB FROM TGFFIN FS GROUP BY FS.NUNOTA) FIN ON FIN.NUNOTA = CAB.NUNOTA
+WHERE 
+	TPO.TIPMOV IN ('V','D')
+	AND CAB.STATUSNOTA = 'L'
+	AND trunc(NVL(CAB.DTENTSAI,CAB.DTNEG)) BETWEEN :PERIODO.INI AND :PERIODO.FIN
+	AND EMP.CODEMP IN :CODEMP
+	AND TPO.ATUALFIN <> 0
+	AND (CAB.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL)
+	AND CAB.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC1' OR CODCTACTB = '21')
+    AND PAR.CODCTACTB = 21
+
+UNION ALL	--ORIGEM FIN
+
+SELECT
+	FIN.CODPARC,
+	PAR.CODCTACTB AS CONTAFORN,
+	PAR.RAZAOSOCIAL,
+	'FINANCEIRO' AS TIPO,
+	(CASE WHEN FIN.RECDESP = 1 THEN FIN.VLRDESDOB ELSE 0 END) AS DEBITO,
+	(CASE WHEN FIN.RECDESP = -1 THEN FIN.VLRDESDOB ELSE 0 END)*-1 AS CREDITO
+
+FROM 
+	TGFFIN FIN
+	INNER JOIN TGFTOP TPO ON TPO.DHALTER = FIN.DHTIPOPER AND TPO.CODTIPOPER = FIN.CODTIPOPER
+	INNER JOIN TSIEMP EMP ON FIN.CODEMP = EMP.CODEMP
+	INNER JOIN TGFPAR PAR ON FIN.CODPARC = PAR.CODPARC
+	INNER JOIN TGFNAT NAT ON FIN.CODNAT = NAT.CODNAT
+WHERE 
+	FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC1' OR CODCTACTB = '21')
+	AND PAR.CODCTACTB = 21
+	AND TPO.TIPMOV = 'I'
+	AND EMP.CODEMP IN :CODEMP
+	AND trunc(NVL(FIN.DTENTSAI,FIN.DTNEG)) BETWEEN :PERIODO.INI AND :PERIODO.FIN
+	AND (FIN.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL)
+
+
+	UNION ALL --BAIXAS
+
+SELECT
+	FIN.CODPARC,
+	PAR.CODCTACTB AS CONTAFORN,
+	PAR.RAZAOSOCIAL,
+	'BAIXA' AS TIPO,
+	0 AS DEBITO,
+	((FIN.VLRBAIXA - FIN.VLRJURO - FIN.VLRMULTA - FIN.DESPCART + FIN.VLRDESC)*FIN.RECDESP) AS CREDITO
+
+FROM 
+	TGFFIN FIN
+	INNER JOIN TGFTOP TPO ON TPO.DHALTER = FIN.DHTIPOPER AND TPO.CODTIPOPER = FIN.CODTIPOPER
+	INNER JOIN TSIEMP EMP ON FIN.CODEMP = EMP.CODEMP
+	INNER JOIN TGFPAR PAR ON FIN.CODPARC = PAR.CODPARC
+	INNER JOIN TGFNAT NAT ON FIN.CODNAT = NAT.CODNAT
+WHERE 
+	FIN.PROVISAO = 'N'
+	AND FIN.RECDESP <> 0
+	AND (((TPO.TIPMOV IN ('V','D') 
+	AND (SELECT STATUSNOTA FROM TGFCAB WHERE NUNOTA = FIN.NUNOTA) = 'L')
+	OR ( FIN.NURENEG IS NOT NULL AND 
+	(SELECT STATUSNOTA FROM TGFCAB WHERE NUNOTA =
+	    (SELECT MAX(NUNOTA) FROM TGFFIN WHERE NUFIN IN (SELECT NUFIN FROM TGFREN WHERE NURENEG = FIN.NURENEG *-1)) AND TIPMOV IN ('V','D')) = 'L'))
+	OR
+	    (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC1' OR CODCTACTB = '21') OR FIN.CODTIPOPER IN (2014)))
+	AND PAR.CODCTACTB = 21
+	AND trunc(FIN.DHBAIXA) BETWEEN :PERIODO.INI AND :PERIODO.FIN
+	AND EMP.CODEMP IN :CODEMP
+	AND (FIN.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL)
+  
+
+	)Z
+GROUP BY
+	CODPARC,
+	CONTAFORN,
+	RAZAOSOCIAL
+ORDER BY 
+	4 DESC
+]]></expression>
+        <metadata>
+          <field name="CODPARC" label="Cod. Parceiro" type="I" visible="true" useFooter="false"/>
+          <field name="CONTAFORN" label="CONTAFORN" type="I" visible="true" useFooter="false"/>
+          <field name="RAZAOSOCIAL" label="Razao Social" type="S" visible="true" useFooter="false"/>
+          <field name="DEBITO" label="Débito" type="F" visible="true" useFooter="SUM" mask="#.##0,00"/>
+          <field name="CREDITO" label="Crédito" type="F" visible="true" useFooter="SUM" mask="#.##0,00"/>
+          <field name="SALDO" label="Saldo" type="F" visible="true" useFooter="SUM" mask="#.##0,00"/>
+        </metadata>
+        <refresh-details ui-list="grd_qg8woi">
+          <param id="CODPARC">$CODPARC</param>
+        </refresh-details>
+      </grid>
+    </container>
+  </level>
+  <level id="lvl_au9m9k9" description="ADNCLIENTE">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_au9m9la" useNewGrid="S">
+        <title><![CDATA[Adiantamento de Clientes]]></title>
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT TPOS2.*,(TPOS2.VLRDESDOB-TPOS2.VLRBAIXA) AS VLRABERTO FROM (
+SELECT TPOS.CODPARC,SUM(TPOS.VLRDESDOB) AS VLRDESDOB,SUM(TPOS.VLRBAIXA) AS VLRBAIXA FROM (
+SELECT FIN.CODPARC,0 AS VLRDESDOB,SUM(FIN.VLRDESDOB) AS VLRBAIXA FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+WHERE (FIN.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL) AND FIN.PROVISAO = 'N'
+  AND FIN.RECDESP = -1 AND PAR.CODCTACTB3 = 154
+  AND FIN.CODEMP IN :CODEMP AND TRUNC(FIN.DHBAIXA) <= :POSICAO AND FIN.DHBAIXA IS NOT NULL
+AND (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC3' OR CODCTACTB = '154') OR FIN.CODTIPOPER IN (2017))
+GROUP BY FIN.CODPARC
+UNION ALL
+SELECT FIN.CODPARC,SUM(FIN.VLRDESDOB) AS VLRDESDOB,0 AS VLRBAIXA FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+LEFT JOIN TGFREN REN ON ABS(REN.NUFIN) = ABS(FIN.NUFIN)
+WHERE (FIN.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL) AND PAR.CODCTACTB3 = 154
+  AND (REN.NURENEGORIG IS NULL OR REN.NURENEGORIG = 0)
+  AND FIN.CODEMP IN :CODEMP AND (TRUNC(NVL(FIN.DTENTSAI,FIN.DTNEG)) <= :POSICAO OR FIN.AD_NUSIA IS NOT NULL)
+AND FIN.PROVISAO = 'N' AND (FIN.RECDESP = 0 AND FIN.NURENEG IS NOT NULL OR (FIN.RECDESP = -1 AND FIN.NURENEG IS NULL))
+AND (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC3' OR CODCTACTB = '154') OR FIN.CODTIPOPER IN (2017))
+GROUP BY FIN.CODPARC) TPOS GROUP BY TPOS.CODPARC) TPOS2 WHERE TPOS2.VLRDESDOB-TPOS2.VLRBAIXA != 0]]></expression>
+        <metadata>
+          <field name="CODPARC" label="CODPARC" type="I" visible="true" useFooter="false"/>
+          <field name="VLRDESDOB" label="VLRDESDOB" type="F" visible="true" useFooter="SUM" mask="#.##0,00;(n)"/>
+          <field name="VLRBAIXA" label="VLRBAIXA" type="F" visible="true" useFooter="SUM" mask="#.##0,00;(n)"/>
+          <field name="VLRABERTO" label="VLRABERTO" type="F" visible="true" useFooter="SUM" mask="#.##0,00;(n)"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+  <level id="lvl_au9m9mj" description="ADNFORNECEDOR">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_au9m9mk" useNewGrid="S">
+        <title><![CDATA[Adiantamento de Fornecedores]]></title>
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT TPOS2.*,(TPOS2.VLRDESDOB-TPOS2.VLRBAIXA) AS VLRABERTO FROM (
+SELECT TPOS.CNPJRAIZ,SUM(TPOS.VLRDESDOB) AS VLRDESDOB,SUM(TPOS.VLRBAIXA) AS VLRBAIXA FROM (
+SELECT SUBSTR(CASE WHEN NVL(PAR.CGC_CPF,0) = 0 THEN TO_CHAR(PAR.CODPARC) ELSE PAR.CGC_CPF END,1,8) AS CNPJRAIZ,0 AS VLRDESDOB,SUM(FIN.VLRDESDOB) AS VLRBAIXA FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+WHERE (FIN.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL) AND FIN.PROVISAO = 'N'
+  AND FIN.RECDESP = 1 AND PAR.CODCTACTB4 = 33
+  AND FIN.CODEMP IN :CODEMP AND TRUNC(FIN.DHBAIXA) <= :POSICAO AND FIN.DHBAIXA IS NOT NULL
+  AND FIN.NUFIN NOT IN (4971673)
+AND (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC4' OR CODCTACTB = '33') OR FIN.CODTIPOPER IN (2005))
+GROUP BY SUBSTR(CASE WHEN NVL(PAR.CGC_CPF,0) = 0 THEN TO_CHAR(PAR.CODPARC) ELSE PAR.CGC_CPF END,1,8)
+UNION ALL
+SELECT SUBSTR(CASE WHEN NVL(PAR.CGC_CPF,0) = 0 THEN TO_CHAR(PAR.CODPARC) ELSE PAR.CGC_CPF END,1,8) AS CNPJRAIZ,SUM(FIN.VLRDESDOB) AS VLRDESDOB,0 AS VLRBAIXA FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+LEFT JOIN TGFREN REN ON ABS(REN.NUFIN) = ABS(FIN.NUFIN)
+WHERE (FIN.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL) AND PAR.CODCTACTB4 = 33
+  AND (REN.NURENEGORIG IS NULL OR REN.NURENEGORIG = 0)
+  AND FIN.CODEMP IN :CODEMP AND (TRUNC(NVL(FIN.DTENTSAI,FIN.DTNEG)) <= :POSICAO OR FIN.AD_NUSIA IS NOT NULL)
+  AND FIN.NUFIN NOT IN (4971673)
+AND FIN.PROVISAO = 'N' AND (FIN.RECDESP = 0 AND FIN.NURENEG IS NOT NULL OR (FIN.RECDESP = 1 AND FIN.NURENEG IS NULL))
+AND (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC4' OR CODCTACTB = '33') OR FIN.CODTIPOPER IN (2005))
+GROUP BY SUBSTR(CASE WHEN NVL(PAR.CGC_CPF,0) = 0 THEN TO_CHAR(PAR.CODPARC) ELSE PAR.CGC_CPF END,1,8)) TPOS GROUP BY TPOS.CNPJRAIZ) TPOS2 WHERE TPOS2.VLRDESDOB-TPOS2.VLRBAIXA != 0
+
+/*
+SELECT TPOS2.*,(TPOS2.VLRDESDOB-TPOS2.VLRBAIXA) AS VLRABERTO FROM (
+SELECT TPOS.CODPARC,SUM(TPOS.VLRDESDOB) AS VLRDESDOB,SUM(TPOS.VLRBAIXA) AS VLRBAIXA FROM (
+SELECT FIN.CODPARC,0 AS VLRDESDOB,SUM(FIN.VLRDESDOB) AS VLRBAIXA FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+WHERE (FIN.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL) AND FIN.PROVISAO = 'N'
+  AND FIN.RECDESP = 1 AND PAR.CODCTACTB4 = 33
+  AND FIN.CODEMP IN :CODEMP AND TRUNC(FIN.DHBAIXA) <= :POSICAO AND FIN.DHBAIXA IS NOT NULL
+  AND FIN.NUFIN NOT IN (4971673)
+AND (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC4' OR CODCTACTB = '33') OR FIN.CODTIPOPER IN (2005))
+GROUP BY FIN.CODPARC
+UNION ALL
+SELECT FIN.CODPARC,SUM(FIN.VLRDESDOB) AS VLRDESDOB,0 AS VLRBAIXA FROM TGFFIN FIN
+INNER JOIN TGFPAR PAR ON PAR.CODPARC = FIN.CODPARC
+LEFT JOIN TGFREN REN ON ABS(REN.NUFIN) = ABS(FIN.NUFIN)
+WHERE (FIN.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL) AND PAR.CODCTACTB4 = 33
+  AND (REN.NURENEGORIG IS NULL OR REN.NURENEGORIG = 0)
+  AND FIN.CODEMP IN :CODEMP AND (TRUNC(NVL(FIN.DTENTSAI,FIN.DTNEG)) <= :POSICAO OR FIN.AD_NUSIA IS NOT NULL)
+  AND FIN.NUFIN NOT IN (4971673)
+AND FIN.PROVISAO = 'N' AND (FIN.RECDESP = 0 AND FIN.NURENEG IS NOT NULL OR (FIN.RECDESP = 1 AND FIN.NURENEG IS NULL))
+AND (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC4' OR CODCTACTB = '33') OR FIN.CODTIPOPER IN (2005))
+GROUP BY FIN.CODPARC) TPOS GROUP BY TPOS.CODPARC) TPOS2 WHERE TPOS2.VLRDESDOB-TPOS2.VLRBAIXA != 0*/]]></expression>
+        <metadata>
+          <field name="CNPJRAIZ" label="CNPJRAIZ" type="S" visible="true" useFooter="false"/>
+          <field name="VLRDESDOB" label="VLRDESDOB" type="F" visible="true" useFooter="SUM" mask="#.##0,00;(n)"/>
+          <field name="VLRBAIXA" label="VLRBAIXA" type="F" visible="true" useFooter="SUM" mask="#.##0,00;(n)"/>
+          <field name="VLRABERTO" label="VLRABERTO" type="F" visible="true" useFooter="SUM" mask="#.##0,00;(n)"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+  <level id="lvl_afzd2mw" description="BACKUP_MOV_FORN">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_afzd2mx" useNewGrid="S">
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT
+CODPARC,
+CONTAFORN,
+RAZAOSOCIAL,
+SUM(DEBITO) AS DEBITO,
+SUM(CREDITO) AS CREDITO,
+SUM(ABS(CREDITO)-ABS(DEBITO)) AS SALDO
+FROM
+(SELECT --ORIGEM CAB
+	CAB.CODPARC,
+	PAR.CODCTACTB2 AS CONTAFORN,
+	PAR.RAZAOSOCIAL,
+	'PORTAL' AS TIPO,
+	SUM(CASE WHEN TPO.TIPMOV = 'E' THEN CAB.VLRNOTA ELSE 0 END)*-1 AS DEBITO,
+	SUM(CASE WHEN TPO.TIPMOV = 'C' THEN CAB.VLRNOTA ELSE 0 END) AS CREDITO
+
+FROM 
+	TGFCAB CAB
+	INNER JOIN TGFTOP TPO ON TPO.DHALTER = CAB.DHTIPOPER AND TPO.CODTIPOPER = CAB.CODTIPOPER
+	INNER JOIN TSIEMP EMP ON CAB.CODEMP = EMP.CODEMP
+	INNER JOIN TGFPAR PAR ON CAB.CODPARC = PAR.CODPARC
+	INNER JOIN TGFNAT NAT ON CAB.CODNAT = NAT.CODNAT
+WHERE 
+	TPO.TIPMOV IN ('C','E')
+	AND CAB.STATUSNOTA = 'L'
+	AND trunc(NVL(CAB.DTENTSAI,CAB.DTNEG)) BETWEEN :PERIODO.INI AND :PERIODO.FIN
+	AND EMP.CODEMP IN :CODEMP
+	AND TPO.ATUALFIN <> 0
+	AND (CAB.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL)
+	AND CAB.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC2' OR CODCTACTB = '79')
+    AND PAR.CODCTACTB2 = 79
+
+GROUP BY
+	CAB.CODPARC,
+	PAR.RAZAOSOCIAL,
+	PAR.CODCTACTB2
+
+UNION ALL	--ORIGEM FIN
+
+SELECT
+	CODPARC
+	, CONTAFORN
+	, RAZAOSOCIAL
+	, 'FINANCEIRO' AS TIPO
+	, NVL(SUM(DEBITO),0) DEBITO
+	, NVL(SUM(CREDITO),0) CREDITO
+FROM
+(SELECT
+		FIN.CODPARC,
+		PAR.CODCTACTB2 AS CONTAFORN,
+		PAR.RAZAOSOCIAL,
+		(CASE WHEN FIN.RECDESP = 1 AND NVL(NURENEG,0) = 0 THEN FIN.VLRDESDOB  
+				WHEN FIN.RECDESP = 1 AND NVL(NURENEG,0) <> 0 THEN 0
+				WHEN (SELECT MAX(RECDESP) FROM TGFFIN WHERE RECDESP <> 0 AND ABS(NURENEG) = ABS(FIN.NURENEG)) = 1 THEN FIN.VLRDESDOB 
+			END
+			 ) AS DEBITO,
+		(CASE WHEN FIN.RECDESP = -1 AND NVL(NURENEG,0) = 0 THEN FIN.VLRDESDOB  
+				WHEN FIN.RECDESP = -1 AND NVL(NURENEG,0) <> 0 THEN 0
+				WHEN (SELECT MAX(RECDESP) FROM TGFFIN WHERE RECDESP <> 0 AND ABS(NURENEG) = ABS(FIN.NURENEG)) = -1 THEN FIN.VLRDESDOB 
+			END
+			 ) AS CREDITO
+
+	FROM 
+		TGFFIN FIN
+		INNER JOIN TGFTOP TPO ON TPO.DHALTER = FIN.DHTIPOPER AND TPO.CODTIPOPER = FIN.CODTIPOPER
+		INNER JOIN TSIEMP EMP ON FIN.CODEMP = EMP.CODEMP
+		INNER JOIN TGFPAR PAR ON FIN.CODPARC = PAR.CODPARC
+		INNER JOIN TGFNAT NAT ON FIN.CODNAT = NAT.CODNAT
+	WHERE 
+		FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC2' OR CODCTACTB = '79')
+		AND PAR.CODCTACTB2 = 79
+		AND TPO.TIPMOV = 'I'
+		AND EMP.CODEMP IN :CODEMP
+		AND trunc(NVL(FIN.DTENTSAI,FIN.DTNEG)) BETWEEN :PERIODO.INI AND :PERIODO.FIN
+		AND (FIN.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL)
+)Z
+GROUP BY
+	CODPARC,
+	RAZAOSOCIAL,
+	CONTAFORN
+
+
+	UNION ALL --BAIXAS
+
+SELECT
+	FIN.CODPARC,
+	PAR.CODCTACTB2 AS CONTAFORN,
+	PAR.RAZAOSOCIAL,
+	'BAIXA' AS TIPO,
+	SUM((FIN.VLRBAIXA - FIN.VLRJURO - FIN.VLRMULTA - FIN.DESPCART + FIN.VLRDESC)*FIN.RECDESP) AS DEBITO,
+	0 AS CREDITO
+
+FROM 
+	TGFFIN FIN
+	INNER JOIN TGFTOP TPO ON TPO.DHALTER = FIN.DHTIPOPER AND TPO.CODTIPOPER = FIN.CODTIPOPER
+	INNER JOIN TSIEMP EMP ON FIN.CODEMP = EMP.CODEMP
+	INNER JOIN TGFPAR PAR ON FIN.CODPARC = PAR.CODPARC
+	INNER JOIN TGFNAT NAT ON FIN.CODNAT = NAT.CODNAT
+WHERE 
+	FIN.PROVISAO = 'N'
+	AND FIN.RECDESP <> 0
+	AND (((TPO.TIPMOV IN ('C','E') 
+	AND (SELECT STATUSNOTA FROM TGFCAB WHERE NUNOTA = FIN.NUNOTA) = 'L')
+	OR ( FIN.NURENEG IS NOT NULL AND 
+	(SELECT STATUSNOTA FROM TGFCAB WHERE NUNOTA =
+	    (SELECT MAX(NUNOTA) FROM TGFFIN WHERE NUFIN IN (SELECT NUFIN FROM TGFREN WHERE NURENEG = FIN.NURENEG *-1)) AND TIPMOV IN ('C','E')) = 'L'))
+	OR
+	    (FIN.CODTIPOPER IN (SELECT CODTIPOPER FROM TGFCTB WHERE CODCTACTB = 'PARC2' OR CODCTACTB = '79')  OR FIN.CODTIPOPER IN (2021)))
+	AND PAR.CODCTACTB2 = 79
+	AND trunc(FIN.DHBAIXA) BETWEEN :PERIODO.INI AND :PERIODO.FIN
+	AND EMP.CODEMP IN :CODEMP
+	AND (FIN.CODPARC = :PARCEIRO OR :PARCEIRO IS NULL)
+  
+GROUP BY
+	FIN.CODPARC,
+	PAR.RAZAOSOCIAL,
+	PAR.CODCTACTB2
+	)Z
+GROUP BY
+	CODPARC,
+	CONTAFORN,
+	RAZAOSOCIAL
+ORDER BY 
+	4 DESC
+]]></expression>
+        <metadata>
+          <field name="CODPARC" label="CODPARC" type="I" visible="true" useFooter="false"/>
+          <field name="CONTAFORN" label="CONTAFORN" type="I" visible="true" useFooter="false"/>
+          <field name="RAZAOSOCIAL" label="RAZAOSOCIAL" type="S" visible="true" useFooter="false"/>
+          <field name="DEBITO" label="DEBITO" type="I" visible="true" useFooter="false"/>
+          <field name="CREDITO" label="CREDITO" type="I" visible="true" useFooter="false"/>
+          <field name="SALDO" label="SALDO" type="I" visible="true" useFooter="false"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+</gadget>
