@@ -1,0 +1,36 @@
+<gadget>
+  <prompt-parameters>
+    <parameter id="DTINICIO" description="Data Inicio" metadata="date" required="true" keep-last="true" keep-date="false" order="0"/>
+    <parameter id="DTFIM" description="Data Final" metadata="date" required="true" keep-last="true" keep-date="false" order="1"/>
+  </prompt-parameters>
+  <level id="lvl_agh2too" description="Principal">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_agh2top" useNewGrid="S">
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT C.DTENTSAI,
+F.NUNOTA,
+C.NUMNOTA,
+C.CODTIPVENDA,
+F.CODTIPTIT,
+C.VLRNOTA
+
+
+FROM VGFFIN F
+
+INNER JOIN TGFCAB C ON C.NUNOTA = F.NUNOTA
+
+WHERE F.CODTIPTIT IN (11, 13, 15)
+AND C.DTNEG >= :DTINICIO
+AND C.DTNEG <= :DTFIM
+AND C.CODTIPVENDA NOT IN (93, 94, 99)]]></expression>
+        <metadata>
+          <field name="DTENTSAI" label="Data de Entrada e Saída" type="D" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          <field name="NUNOTA" label="Número Único" type="I" visible="true" useFooter="false"/>
+          <field name="NUMNOTA" label="Numero Nota" type="I" visible="true" useFooter="false"/>
+          <field name="CODTIPVENDA" label="Tipo de Negociação" type="I" visible="true" useFooter="false"/>
+          <field name="CODTIPTIT" label="Tipo de Título" type="I" visible="true" useFooter="false"/>
+          <field name="VLRNOTA" label="Valor Nota" type="F" visible="true" useFooter="false" mask="R$ #.##0,00"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+</gadget>
