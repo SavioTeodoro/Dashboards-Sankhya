@@ -1,0 +1,345 @@
+<gadget>
+  <prompt-parameters>
+    <parameter id="DTPOS" description="Posição" metadata="date" required="true" keep-last="true" keep-date="false" order="0"/>
+  </prompt-parameters>
+  <local-vars>
+    <var id="V_LOGO">
+      <expression type="sql" data-source="MGEDS"><![CDATA[SELECT 
+'<div class="img"><img src="https://media-exp1.licdn.com/dms/image/C4D1BAQG6L8xXXP5Gag/company-background_10000/0/1518958568152?e=1661371200&v=beta&t=EadTzc6Nc8gIrJVjn0foFcv4GkIRc1S3AuDTEuYi07E" width="30%"></div>'
+FROM DUAL
+]]></expression>
+    </var>
+  </local-vars>
+  <level id="lvl_ak7gup9" description="Principal">
+    <container orientacao="V" tamanhoRelativo="100">
+      <container orientacao="V" tamanhoRelativo="295">
+        <container orientacao="V" tamanhoRelativo="141">
+          <simple-value id="svl_ak7gurn">
+            <value-expression><![CDATA[<html><body><div class="img">$V_LOGO</div></body></html>
+
+<style>
+
+ .img {  
+position: relative;
+width: 100%;
+padding: 50px;
+flex-direction: row;
+display: flex;
+ justify-content: center;
+align-items: center;
+}
+
+.back {
+ background: linear-gradient(90deg, rgba(9, 157, 27, 1) 0%, rgba(5, 96, 50, 1) 30%, rgba(5, 96, 50, 1) 80%, rgba(9, 157, 27, 1) 100%); 
+opacity: 0.3;
+}
+
+    .reset {
+        position: relative;
+        width: 80%;
+        margin: 20px;
+        padding: 0;
+        box-sizing: border-box;
+        text-align: right;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Oswald', sans-serif;
+    }
+    
+    .titulo {
+        font-size: 6vh;
+        font-style: bold;
+    }
+.button {
+        text-align: center;
+        width: 65%;
+        height: 12vh;
+        margin-left: 20%;
+        font-size: 4.0vh;
+        font-style: bold;
+        color: white;
+        text-shadow: #000 1px 1px 10px;
+        border: transparent;
+        background-color: white;
+        border-radius: 50px;
+	     box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+    }
+
+    .bt7 {
+        background: linear-gradient(90deg, rgba(52, 120, 55, 1) 0%, rgba(5, 96, 50, 1) 30%, rgba(5, 96, 50, 1) 80%, rgba(52, 120, 55, 1) 100%); 
+box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    }
+
+    @font-face {
+        font-family: 'Oswald';
+        src: url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap');
+    }
+
+</style>]]></value-expression>
+          </simple-value>
+        </container>
+        <container orientacao="H" tamanhoRelativo="100">
+          <container orientacao="V" tamanhoRelativo="50">
+            <simple-value id="svl_ak7gurt">
+              <value-expression><![CDATA[<html><body><div class="reset"></div><button class="button bt7">Veículos</button></div></body></html>]]></value-expression>
+              <on-click navigate-to="lvl_ak7guqd"/>
+            </simple-value>
+          </container>
+          <container orientacao="V" tamanhoRelativo="50">
+            <simple-value id="svl_ak7gurq">
+              <value-expression><![CDATA[<html><body><div class="reset"></div><button class="button bt7">Prédios</button></div></body></html>]]></value-expression>
+              <on-click navigate-to="lvl_ak7guq3"/>
+            </simple-value>
+          </container>
+        </container>
+      </container>
+      <container orientacao="H" tamanhoRelativo="125">
+        <container orientacao="V" tamanhoRelativo="50">
+          <simple-value id="svl_ak7guro">
+            <value-expression><![CDATA[<html><body><div class="reset"></div><button class="button bt7">Máquinas e Equip.</button></div></body></html>]]></value-expression>
+            <on-click navigate-to="lvl_ak7guqa"/>
+          </simple-value>
+        </container>
+        <container orientacao="V" tamanhoRelativo="50">
+          <simple-value id="svl_ak7gurr">
+            <value-expression><![CDATA[<html><body><div class="reset"></div><button class="button bt7">Móveis e Utens.</button></div></body></html>]]></value-expression>
+            <on-click navigate-to="lvl_ak7guql"/>
+          </simple-value>
+        </container>
+      </container>
+      <container orientacao="H" tamanhoRelativo="106">
+        <container orientacao="V" tamanhoRelativo="50">
+          <simple-value id="svl_ak7gurp">
+            <value-expression><![CDATA[<html><body><div class="reset"></div><button class="button bt7">Computadores e Tec.</button></div></body></html>]]></value-expression>
+            <on-click navigate-to="lvl_ak7guqw"/>
+          </simple-value>
+        </container>
+        <container orientacao="V" tamanhoRelativo="50">
+          <simple-value id="svl_ak7gurs">
+            <value-expression><![CDATA[<html><body><div class="reset"></div><button class="button bt7">Instalações</button></div></body></html>]]></value-expression>
+            <on-click navigate-to="lvl_ak7guqq"/>
+          </simple-value>
+        </container>
+      </container>
+    </container>
+  </level>
+  <level id="lvl_ak7guqa" description="MAQ">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_ak7guqb" useNewGrid="S">
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT G.DESCRGRUPOPROD
+, B.CODBEM
+, P.CODPROD
+, P.DESCRPROD
+, B.NUMNOTA
+, B.DTCOMPRA
+, B.DTINICIODEP
+, B.VLRAQUISICAO AS VLR_AQUISICAO
+, B.VLRSALDO AS VLR_SALDO
+
+FROM TGFPRO P
+INNER JOIN TGFGRU G ON G.CODGRUPOPROD = P.CODGRUPOPROD
+INNER JOIN TCIBEM B ON B.CODPROD = P.CODPROD
+WHERE G.AD_A_CTACTB  <> 0 
+AND B.DTCOMPRA <= :DTPOS
+AND G.AD_A_CTACTB IN (1077)
+
+
+]]></expression>
+        <metadata>
+          <field name="DESCRGRUPOPROD" label="Descrição do Grupo" type="S" visible="true" useFooter="false"/>
+          <field name="CODBEM" label="Codigo do Bem" type="S" visible="true" useFooter="false"/>
+          <field name="CODPROD" label="Codigo do Produto" type="I" visible="true" useFooter="false"/>
+          <field name="DESCRPROD" label="Descrição Produto" type="S" visible="true" useFooter="false"/>
+          <field name="NUMNOTA" label="Numero Nota" type="I" visible="true" useFooter="false"/>
+          <field name="DTCOMPRA" label="Data de Compra" type="D" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          <field name="DTINICIODEP" label="Data de Depreciação" type="D" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          <field name="VLR_AQUISICAO" label="Valor de Compra" type="F" visible="true" useFooter="SUM" mask="R$ #.##0,00"/>
+          <field name="VLR_SALDO" label="Saldo" type="F" visible="true" useFooter="SUM" mask="R$ #.##0,00"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+  <level id="lvl_ak7guqd" description="VEI">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_ak7guqe" useNewGrid="S">
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT G.DESCRGRUPOPROD
+, B.CODBEM
+, P.CODPROD
+, P.DESCRPROD
+, B.NUMNOTA
+, B.DTCOMPRA
+, B.DTINICIODEP
+, B.VLRAQUISICAO AS VLR_AQUISICAO
+, B.VLRSALDO AS VLR_SALDO
+
+FROM TGFPRO P
+INNER JOIN TGFGRU G ON G.CODGRUPOPROD = P.CODGRUPOPROD
+INNER JOIN TCIBEM B ON B.CODPROD = P.CODPROD
+WHERE G.AD_A_CTACTB  <> 0 
+AND B.DTCOMPRA <= :DTPOS
+AND G.AD_A_CTACTB IN (1075)
+
+
+
+]]></expression>
+        <metadata>
+          <field name="DESCRGRUPOPROD" label="Descrição Grupo" type="S" visible="true" useFooter="false"/>
+          <field name="CODBEM" label="Código do Bem" type="S" visible="true" useFooter="false"/>
+          <field name="CODPROD" label="Código do Produto" type="I" visible="true" useFooter="false"/>
+          <field name="DESCRPROD" label="Descrição Produto" type="S" visible="true" useFooter="false"/>
+          <field name="NUMNOTA" label="Número Nota" type="I" visible="true" useFooter="false"/>
+          <field name="DTCOMPRA" label="Data de Compra" type="D" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          <field name="DTINICIODEP" label="Data Depreciação" type="D" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          <field name="VLR_AQUISICAO" label="Valor de Compra" type="F" visible="true" useFooter="SUM" mask="R$ #.##0,00"/>
+          <field name="VLR_SALDO" label="Saldo " type="F" visible="true" useFooter="SUM" mask="R$ #.##0,00"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+  <level id="lvl_ak7guql" description="MOV">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_ak7guqm" useNewGrid="S">
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT G.DESCRGRUPOPROD
+, B.CODBEM
+, P.CODPROD
+, P.DESCRPROD
+, B.NUMNOTA
+, B.DTCOMPRA
+, B.DTINICIODEP
+, B.VLRAQUISICAO AS VLR_AQUISICAO
+, B.VLRSALDO AS VLR_SALDO
+
+FROM TGFPRO P
+INNER JOIN TGFGRU G ON G.CODGRUPOPROD = P.CODGRUPOPROD
+INNER JOIN TCIBEM B ON B.CODPROD = P.CODPROD
+WHERE G.AD_A_CTACTB  <> 0 
+AND B.DTCOMPRA <= :DTPOS
+AND G.AD_A_CTACTB IN (1080)
+
+
+]]></expression>
+        <metadata>
+          <field name="DESCRGRUPOPROD" label="Grupo Imobilizado" type="S" visible="true" useFooter="false"/>
+          <field name="CODBEM" label="Codigo do Bem" type="S" visible="true" useFooter="false"/>
+          <field name="CODPROD" label="Codigo do Produto" type="I" visible="true" useFooter="false"/>
+          <field name="DESCRPROD" label="Descrição Produto" type="S" visible="true" useFooter="false"/>
+          <field name="NUMNOTA" label="Numero Nota" type="I" visible="true" useFooter="false"/>
+          <field name="DTCOMPRA" label="Data de Compra" type="D" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          <field name="DTINICIODEP" label="Data de Depreciação" type="D" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          <field name="VLR_AQUISICAO" label="Valor De Compra " type="F" visible="true" useFooter="SUM" mask="R$ #.##0,00"/>
+          <field name="VLR_SALDO" label="Saldo" type="F" visible="true" useFooter="SUM" mask="R$ #.##0,00"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+  <level id="lvl_ak7guqq" description="INS">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_ak7guqr" useNewGrid="S">
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT G.DESCRGRUPOPROD
+, B.CODBEM
+, P.CODPROD
+, P.DESCRPROD
+, B.NUMNOTA
+, B.DTCOMPRA
+, B.DTINICIODEP
+, B.VLRAQUISICAO AS VLR_AQUISICAO
+, B.VLRSALDO AS VLR_SALDO
+
+FROM TGFPRO P
+INNER JOIN TGFGRU G ON G.CODGRUPOPROD = P.CODGRUPOPROD
+INNER JOIN TCIBEM B ON B.CODPROD = P.CODPROD
+
+WHERE G.AD_A_CTACTB  <> 0 
+AND B.DTCOMPRA <= :DTPOS
+AND G.AD_A_CTACTB IN (1082)
+
+
+
+]]></expression>
+        <metadata>
+          <field name="DESCRGRUPOPROD" label="Descrição Grupo" type="S" visible="true" useFooter="false"/>
+          <field name="CODBEM" label="Código Bem" type="S" visible="true" useFooter="false"/>
+          <field name="CODPROD" label="Código do Produto" type="I" visible="true" useFooter="false"/>
+          <field name="DESCRPROD" label="Descrição Produto" type="S" visible="true" useFooter="false"/>
+          <field name="NUMNOTA" label="Número Nota" type="I" visible="true" useFooter="false"/>
+          <field name="DTCOMPRA" label="Data de Compra" type="D" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          <field name="DTINICIODEP" label="Data Depreciação" type="D" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          <field name="VLR_AQUISICAO" label="Valor de Compra " type="F" visible="true" useFooter="SUM" mask="R$ #.##0,00"/>
+          <field name="VLR_SALDO" label="Saldo" type="F" visible="true" useFooter="SUM" mask="R$ #.##0,00"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+  <level id="lvl_ak7guqw" description="TEC">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_ak7guqx" useNewGrid="S">
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT G.DESCRGRUPOPROD
+, B.CODBEM
+, P.CODPROD
+, P.DESCRPROD
+, B.NUMNOTA
+, B.DTCOMPRA
+, B.DTINICIODEP
+, B.VLRAQUISICAO AS VLR_AQUISICAO
+, B.VLRSALDO AS VLR_SALDO
+
+FROM TGFPRO P
+INNER JOIN TGFGRU G ON G.CODGRUPOPROD = P.CODGRUPOPROD
+INNER JOIN TCIBEM B ON B.CODPROD = P.CODPROD
+WHERE G.AD_A_CTACTB  <> 0 
+AND B.DTCOMPRA <= :DTPOS
+AND G.AD_A_CTACTB IN (1084)]]></expression>
+        <metadata>
+          <field name="DESCRGRUPOPROD" label="Descrição do Grupo" type="S" visible="true" useFooter="false"/>
+          <field name="CODBEM" label="Código do Bem" type="S" visible="true" useFooter="false"/>
+          <field name="CODPROD" label="Código Produto" type="I" visible="true" useFooter="false"/>
+          <field name="DESCRPROD" label="Descrição do Produto" type="S" visible="true" useFooter="false"/>
+          <field name="NUMNOTA" label="Número Nota" type="I" visible="true" useFooter="false"/>
+          <field name="DTCOMPRA" label="Data de Compra" type="D" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          <field name="DTINICIODEP" label="Data Depreciação" type="D" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          <field name="VLR_AQUISICAO" label="Valor de Compra" type="F" visible="true" useFooter="SUM" mask="R$ #.##0,00"/>
+          <field name="VLR_SALDO" label="Saldo" type="F" visible="true" useFooter="SUM" mask="R$ #.##0,00"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+  <level id="lvl_ak7guq3" description="PRE">
+    <container orientacao="V" tamanhoRelativo="100">
+      <grid id="grd_ak7guq4" useNewGrid="S">
+        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT G.DESCRGRUPOPROD
+, B.CODBEM
+, P.CODPROD
+, P.DESCRPROD
+, B.NUMNOTA
+, B.DTCOMPRA
+, B.DTINICIODEP
+, B.VLRAQUISICAO AS VLR_AQUISICAO
+, B.VLRSALDO AS VLR_SALDO
+
+FROM TGFPRO P
+INNER JOIN TGFGRU G ON G.CODGRUPOPROD = P.CODGRUPOPROD
+INNER JOIN TCIBEM B ON B.CODPROD = P.CODPROD
+WHERE G.AD_A_CTACTB  <> 0 
+AND B.DTCOMPRA <= :DTPOS
+AND G.AD_A_CTACTB IN (1047)
+
+ 
+
+]]></expression>
+        <metadata>
+          <field name="DESCRGRUPOPROD" label="Descrição do Grupo" type="S" visible="true" useFooter="false"/>
+          <field name="CODBEM" label="Código do Bem" type="S" visible="true" useFooter="false"/>
+          <field name="CODPROD" label="Código do Produto" type="I" visible="true" useFooter="false"/>
+          <field name="DESCRPROD" label="Descrição do Produto" type="S" visible="true" useFooter="false"/>
+          <field name="NUMNOTA" label="Número da  Nota" type="I" visible="true" useFooter="false"/>
+          <field name="DTCOMPRA" label="Data de Compra" type="D" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          <field name="DTINICIODEP" label="Data de Depreciação" type="D" visible="true" useFooter="false" mask="DD/MM/YYYY"/>
+          <field name="VLR_AQUISICAO" label="Valor de Compra" type="F" visible="true" useFooter="SUM" mask="R$ #.##0,00"/>
+          <field name="VLR_SALDO" label="Saldo" type="F" visible="true" useFooter="SUM" mask="R$ #.##0,00"/>
+        </metadata>
+      </grid>
+    </container>
+  </level>
+</gadget>
